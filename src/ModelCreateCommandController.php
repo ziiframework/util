@@ -14,11 +14,9 @@ use Nette\PhpGenerator\Closure;
 use Nette\PhpGenerator\Parameter;
 use Nette\PhpGenerator\PhpNamespace;
 use Yii;
-use yii\base\NotSupportedException;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ColumnSchema;
-use yii\db\Exception;
 use yii\db\TableSchema;
 use yii\helpers\Inflector;
 
