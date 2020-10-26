@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace Zii\Util;
 
 use app\commands\BasicCommandController;
-
-use app\support\Db;
 use app\models\BasicActiveRecord;
-use app\support\Rule;
+
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Closure;
 use Nette\PhpGenerator\Parameter;
@@ -173,10 +171,10 @@ abstract class ModelCreateCommandController extends BasicCommandController
         }
 
         // Table Comment
-        $this->_class->addComment(Db::getTableComment($tableName). "\n");
+        $this->_class->addComment(DbUtil::getTableComment($tableName). "\n");
 
         // Table Indexes
-        foreach (Db::getTableIndexes($tableName) as $index) {
+        foreach (DbUtil::getTableIndexes($tableName) as $index) {
             $this->_indexes[$index['Column_name']] = (bool)($index['Non_unique'] * 1) ? 'indexed' : 'unique';
         }
 
@@ -293,7 +291,7 @@ abstract class ModelCreateCommandController extends BasicCommandController
         }
 
         // tinyint
-        if (Db::castDataType($column->dbType) === 'tinyint') {
+        if (DbUtil::castDataType($column->dbType) === 'tinyint') {
             // $column->size === 1
             // Warning: #1681 Integer display width is deprecated and will be removed in a future release.
             if (preg_match('/^(is|has|can|enable)_/', $column->name)) {
@@ -303,44 +301,44 @@ abstract class ModelCreateCommandController extends BasicCommandController
                 $this->_typeCastAttributes[$column->name] = AttributeTypecastBehavior::TYPE_INTEGER;
                 $this->_ruleInteger[] = [
                     'name' => $column->name,
-                    'max' => Db::getColumnMaxValue($column),
+                    'max' => DbUtil::getColumnMaxValue($column),
                 ];
             }
         }
 
         // int
-        if (in_array(Db::castDataType($column->dbType), ['smallint', 'mediumint', 'int', 'integer', 'bigint'], true)) {
+        if (in_array(DbUtil::castDataType($column->dbType), ['smallint', 'mediumint', 'int', 'integer', 'bigint'], true)) {
             $this->_ruleInteger[] = [
                 'name' => $column->name,
-                'max' => Db::getColumnMaxValue($column),
+                'max' => DbUtil::getColumnMaxValue($column),
             ];
         }
 
         // double、float、decimal TODO
-        if (Db::castDataType($column->dbType) === 'double') {
+        if (DbUtil::castDataType($column->dbType) === 'double') {
             $this->_ruleInteger[] = [
                 'name' => $column->name,
-                'max' => Db::getColumnMaxValue($column),
+                'max' => DbUtil::getColumnMaxValue($column),
             ];
             $this->_typeCastAttributes[$column->name] = AttributeTypecastBehavior::TYPE_INTEGER;
         }
-        if (Db::castDataType($column->dbType) === 'float') {
+        if (DbUtil::castDataType($column->dbType) === 'float') {
             $this->_ruleInteger[] = [
                 'name' => $column->name,
-                'max' => Db::getColumnMaxValue($column),
+                'max' => DbUtil::getColumnMaxValue($column),
             ];
             $this->_typeCastAttributes[$column->name] = AttributeTypecastBehavior::TYPE_INTEGER;
         }
-        if (Db::castDataType($column->dbType) === 'decimal') {
+        if (DbUtil::castDataType($column->dbType) === 'decimal') {
             $this->_ruleInteger[] = [
                 'name' => $column->name,
-                'max' => Db::getColumnMaxValue($column),
+                'max' => DbUtil::getColumnMaxValue($column),
             ];
             $this->_typeCastAttributes[$column->name] = AttributeTypecastBehavior::TYPE_INTEGER;
         }
 
         // varchar
-        if (Db::castDataType($column->dbType) === 'varchar') {
+        if (DbUtil::castDataType($column->dbType) === 'varchar') {
             $this->_ruleString[] = [
                 'name' => $column->name,
                 'size' => $column->size,
@@ -348,7 +346,7 @@ abstract class ModelCreateCommandController extends BasicCommandController
         }
 
         // text
-        if (Db::castDataType($column->dbType) === 'text') {
+        if (DbUtil::castDataType($column->dbType) === 'text') {
             $this->_ruleString[] = [
                 'name' => $column->name,
                 'size' => 65535,
@@ -356,7 +354,7 @@ abstract class ModelCreateCommandController extends BasicCommandController
         }
 
         // enum
-        if (Db::castDataType($column->dbType) === 'enum') {
+        if (DbUtil::castDataType($column->dbType) === 'enum') {
             $this->_ruleRange[] = [
                 'name' => $column->name,
                 'range' => $column->enumValues,
@@ -364,7 +362,7 @@ abstract class ModelCreateCommandController extends BasicCommandController
         }
 
         // set
-        if (Db::castDataType($column->dbType) === 'set') {
+        if (DbUtil::castDataType($column->dbType) === 'set') {
             $isMatch = preg_match('/^([\w ]+)(?:\(([^)]+)\))?$/', $column->dbType, $matches);
             if ($isMatch !== false && !empty($matches[2])) {
                 $values = preg_split('/\s*,\s*/', $matches[2]);
@@ -380,16 +378,16 @@ abstract class ModelCreateCommandController extends BasicCommandController
         }
 
         // year、date、time、timestamp、datetime
-        if (isset(self::$_dateFormat[Db::castDataType($column->dbType)])) {
+        if (isset(self::$_dateFormat[DbUtil::castDataType($column->dbType)])) {
             $this->_ruleYmdHis[] = [
                 'name' => $column->name,
-                'format' => self::$_dateFormat[Db::castDataType($column->dbType)],
+                'format' => self::$_dateFormat[DbUtil::castDataType($column->dbType)],
             ];
         }
 
         // xxx_id
         if (preg_match('/^([a-z0-9]+)_id$/', $column->name, $matches)) {
-            $getTableComment = Db::getTableComment($matches[1]);
+            $getTableComment = DbUtil::getTableComment($matches[1]);
             if ($getTableComment !== null) {
                 $this->_ruleExist[] = [
                     'name' => $column->name,
@@ -404,11 +402,11 @@ abstract class ModelCreateCommandController extends BasicCommandController
     {
         $rules = [];
 
-        $this->_namespace->addUse(Rule::class);
+        $this->_namespace->addUse(RuleUtil::class);
         // Rule String
         if (!empty($this->_ruleString) || !empty($this->_ruleRange)) {
             $closure = new Closure();
-            $closure->setBody('return Rule::strOrNull($value);')
+            $closure->setBody('return RuleUtil::strOrNull($value);')
                 ->setReturnType('?string')
                 ->addParameter('value');
             $rules[] = [
@@ -428,7 +426,7 @@ abstract class ModelCreateCommandController extends BasicCommandController
             }
             foreach ($groupByFormat as $format => $names) {
                 $closure = new Closure();
-                $closure->setBody("return Rule::dateOrNull(\$value, '{$format}');")
+                $closure->setBody("return RuleUtil::dateOrNull(\$value, '{$format}');")
                     ->setReturnType('?string')
                     ->addParameter('value');
                 $rules[] = [

@@ -20,6 +20,7 @@
     "require": {
         "php": ">=7.4.0",
         "ext-mbstring": "*",
+        "ext-json": "*",
         "ziiframework/zii": "3.0.x-dev",
         "nette/php-generator": "^3.4"
     },
