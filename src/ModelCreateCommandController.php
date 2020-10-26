@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Zii\Util;
 
+use app\commands\BasicCommandController;
+
 use app\support\Db;
 use app\models\BasicActiveRecord;
 use app\support\Rule;
@@ -20,19 +22,18 @@ use yii\db\Exception;
 use yii\db\TableSchema;
 use yii\helpers\Inflector;
 
-abstract class ModelCreateController extends BasicCommandController
+abstract class ModelCreateCommandController extends BasicCommandController
 {
-    private static string $identityInterfaceImplement = 'yh';
+    public static string $identityInterfaceImplement = 'yh';
 
     private PhpNamespace $_namespace;
 
     private ClassType $_class;
 
-    // 表索引
     private array $_indexes = [];
 
     /**
-     * 必需 eg:
+     * Required eg:
      * [
      *   ['name' => NAME],
      *   ['name' => NAME],
@@ -42,7 +43,7 @@ abstract class ModelCreateController extends BasicCommandController
     private array $_ruleRequired = [];
 
     /**
-     * 范围 eg:
+     * Range eg:
      * [
      *   ['name' => NAME, 'range' => RANGE],
      *   ['name' => NAME, 'range' => RANGE],
@@ -52,7 +53,7 @@ abstract class ModelCreateController extends BasicCommandController
     private array $_ruleRange = [];
 
     /**
-     * 布尔值 eg:
+     * Boolean eg:
      * [
      *   ['name' => NAME],
      *   ['name' => NAME],
@@ -63,7 +64,7 @@ abstract class ModelCreateController extends BasicCommandController
 
 
     /**
-     * 整数型 eg:
+     * Integer eg:
      * [
      *   ['name' => NAME, 'size' => SIZE],
      *   ['name' => NAME, 'size' => SIZE],
@@ -73,7 +74,7 @@ abstract class ModelCreateController extends BasicCommandController
     private array $_ruleInteger = [];
 
     /**
-     * 字符串 eg:
+     * String eg:
      * [
      *   ['name' => NAME, 'size' => SIZE],
      *   ['name' => NAME, 'size' => SIZE],
@@ -83,7 +84,7 @@ abstract class ModelCreateController extends BasicCommandController
     private array $_ruleString = [];
 
     /**
-     * 时间日期 eg:
+     * YmdHis eg:
      * [
      *   ['name' => NAME, 'format' => 'Y-m-d'],
      *   ['name' => NAME, 'format' => 'Y-m-d H:i:s'],
@@ -93,7 +94,7 @@ abstract class ModelCreateController extends BasicCommandController
     private array $_ruleYmdHis = [];
 
     /**
-     * 存在 eg:
+     * Exist eg:
      * [
      *   ['name' => NAME, 'targetClassName' => 'Member'],
      *   ['name' => NAME, 'targetClassName' => 'Member'],
@@ -103,7 +104,7 @@ abstract class ModelCreateController extends BasicCommandController
     private array $_ruleExist = [];
 
     /**
-     * 类型推断 eg:
+     * typeCast eg:
      * [
      *   attr => targetClass,
      *   attr => targetClass,
@@ -112,9 +113,6 @@ abstract class ModelCreateController extends BasicCommandController
      */
     private array $_typeCastAttributes = [];
 
-    /**
-     * 时间日期格式
-     */
     private static array $_dateFormat = [
         'year' => 'Y',
         'date' => 'Y-m-d',
@@ -124,7 +122,7 @@ abstract class ModelCreateController extends BasicCommandController
     ];
 
     /**
-     * 特殊字符替换
+     * special chars replacement
      */
     private static array $_codeReplacements = [
         "'%" => '',
@@ -140,28 +138,6 @@ abstract class ModelCreateController extends BasicCommandController
         '1 => ' => '',
     ];
 
-    /**
-     * @param bool $overwrite
-     * @throws NotSupportedException
-     * @throws Exception
-     */
-    public function actionAll(bool $overwrite = false): void
-    {
-        foreach (Yii::$app->db->getSchema()->getTableNames() as $tableName) {
-            if (!in_array($tableName, [
-                'dbcache',
-                'dbsession',
-                'auth_rule',
-                'auth_item',
-                'auth_item_child',
-                'auth_assignment',
-                'migration',
-            ])) {
-                $this->actionIndex($tableName, $overwrite);
-            }
-        }
-    }
-
     private function resetAttributes(): void
     {
         $this->_indexes = [];
@@ -175,11 +151,6 @@ abstract class ModelCreateController extends BasicCommandController
         $this->_typeCastAttributes = [];
     }
 
-    /**
-     * 生成模型.
-     * @param string $tableName
-     * @param bool $overwrite
-     */
     public function actionIndex(string $tableName, bool $overwrite = false): void
     {
         clearstatcache();
@@ -196,17 +167,17 @@ abstract class ModelCreateController extends BasicCommandController
             $this->_class->addImplement(yii\web\IdentityInterface::class);
         }
 
-        // 表结构
+        // Table Struct
         $_schema = Yii::$app->db->getTableSchema($tableName, true);
         if (!($_schema instanceof TableSchema)) {
             echo "Table $tableName does not exist.\n";
             exit;
         }
 
-        // 表注释
+        // Table Comment
         $this->_class->addComment(Db::getTableComment($tableName). "\n");
 
-        // 表索引
+        // Table Indexes
         foreach (Db::getTableIndexes($tableName) as $index) {
             $this->_indexes[$index['Column_name']] = (bool)($index['Non_unique'] * 1) ? 'indexed' : 'unique';
         }
@@ -216,7 +187,7 @@ abstract class ModelCreateController extends BasicCommandController
                 continue;
             }
 
-            // 字段注释
+            // Field Comment
             $this->_class->addComment(implode(' ', [
                 '@property',
                 mb_stripos($column->dbType, 'decimal') !== false ? 'float' : $column->phpType,
@@ -225,7 +196,7 @@ abstract class ModelCreateController extends BasicCommandController
                 isset($this->_indexes[$column->name]) && $this->_indexes[$column->name] ? "This property is {$this->_indexes[$column->name]}." : '',
             ]));
 
-            // 列处理
+            // Column Cast
             $this->castColumn($column);
             ++$this->_columnIdx;
         }
@@ -436,7 +407,7 @@ abstract class ModelCreateController extends BasicCommandController
         $rules = [];
 
         $this->_namespace->addUse(Rule::class);
-        // 字符串类型
+        // Rule String
         if (!empty($this->_ruleString) || !empty($this->_ruleRange)) {
             $closure = new Closure();
             $closure->setBody('return Rule::strOrNull($value);')
@@ -451,7 +422,7 @@ abstract class ModelCreateController extends BasicCommandController
                 'filter' => "%$closure%",
             ];
         }
-        // 时间日期格式
+        // Rule YmdHis
         if (!empty($this->_ruleYmdHis)) {
             $groupByFormat = [];
             foreach ($this->_ruleYmdHis as $column) {
@@ -469,7 +440,7 @@ abstract class ModelCreateController extends BasicCommandController
                 ];
             }
         }
-        // 字符串类型&长度
+        // String Type & Length
         if (!empty($this->_ruleString)) {
             $groupBySize = [];
             foreach ($this->_ruleString as $column) {
@@ -487,7 +458,7 @@ abstract class ModelCreateController extends BasicCommandController
                 ];
             }
         }
-        // 整数类型&长度
+        // Int Type & Length
         if (!empty($this->_ruleInteger)) {
             $groupBySize = [];
             foreach ($this->_ruleInteger as $column) {
@@ -506,7 +477,7 @@ abstract class ModelCreateController extends BasicCommandController
                 ];
             }
         }
-        // 布尔型
+        // Boolean Type
         if (!empty($this->_ruleBoolean)) {
             $rules[] = [
                 $this->arrayOrString(array_column($this->_ruleBoolean, 'name')),
@@ -516,7 +487,7 @@ abstract class ModelCreateController extends BasicCommandController
                 'message' => '{attribute}不是有效的值',
             ];
         }
-        // 范围
+        // Range Type
         if (!empty($this->_ruleRange)) {
             foreach ($this->_ruleRange as $item) {
                 $rules[] = [
@@ -529,7 +500,7 @@ abstract class ModelCreateController extends BasicCommandController
                 ];
             }
         }
-        // 必要
+        // Required Type
         if (!empty($this->_ruleRequired)) {
             $rules[] = [
                 $this->arrayOrString(array_column($this->_ruleRequired, 'name')),
@@ -538,7 +509,7 @@ abstract class ModelCreateController extends BasicCommandController
                 'message' => '{attribute}不能为空',
             ];
         }
-        // 存在
+        // Exist Type
         if (!empty($this->_ruleExist)) {
             $this->_namespace->addUse(ActiveQuery::class);
             foreach ($this->_ruleExist as $item) {
@@ -549,14 +520,14 @@ abstract class ModelCreateController extends BasicCommandController
                     'targetAttribute' => 'id',
                     'message' => '{attribute}不存在',
                 ];
-                // 类的字段注释
+                // Class Comment
                 $this->_class->addComment(implode(' ', [
                     '@property',
                     $item['targetClassName'],
                     '$' . lcfirst($item['targetClassName']),
                     '关联' . str_replace('表', '', $item['targetClassComment']) . '[ActiveRecord].',
                 ]));
-                // 增加表之间的关联方法
+                // Table Relations
                 $this->_class->addMethod("get{$item['targetClassName']}")
                     ->setReturnType('?ActiveQuery')
                     ->addComment("关联{$item['targetClassComment']}")
@@ -564,7 +535,7 @@ abstract class ModelCreateController extends BasicCommandController
                     ->setBody("return \$this->hasOne({$item['targetClassName']}::class, ['id' => '" . lcfirst($item['targetClassName']) . "_id']);");
             }
         }
-        // 唯一
+        // Unique Index
         if (!empty($this->_indexes)) {
             $uniqueFields = [];
             foreach ($this->_indexes as $indexName => $indexType) {

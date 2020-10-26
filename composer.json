@@ -15,8 +15,11 @@
             "homepage": "https://github.com/charescape"
         }
     ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": ">=7.4.0",
+        "ext-mbstring": "*",
         "ziiframework/zii": "3.0.x-dev",
         "nette/php-generator": "^3.4"
     },
