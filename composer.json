@@ -1,0 +1,40 @@
+{
+    "name": "ziiframework/util",
+    "description": "zii-framework util",
+    "type": "library",
+    "keywords": ["zii-framework", "util"],
+    "homepage": "https://github.com/ziiframework/util",
+    "license": "BSD-3-Clause",
+    "support": {
+        "source": "https://github.com/ziiframework/util",
+        "issues": "https://github.com/ziiframework/util/issues"
+    },
+    "authors": [
+        {
+            "name": "charescape",
+            "homepage": "https://github.com/charescape"
+        }
+    ],
+    "require": {
+        "php": ">=7.4.0",
+        "ziiframework/zii": "3.0.x-dev",
+        "nette/php-generator": "^3.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.cn"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Zii\\Util\\": "src" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.0.x-dev"
+        }
+    }
+}
