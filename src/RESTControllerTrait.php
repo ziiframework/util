@@ -14,7 +14,7 @@ trait RESTControllerTrait
 {
     use ControllerTrait;
 
-    private function getActiveDataProviderConfig(ActiveQueryInterface $query, array $query_sort = []): ActiveDataProvider
+    protected function getActiveDataProviderConfig(ActiveQueryInterface $query, array $query_sort = []): ActiveDataProvider
     {
         if (empty($query_sort)) {
             $query_sort = ['id' => SORT_DESC];
