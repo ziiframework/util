@@ -17,7 +17,7 @@ class RuleUtil
      */
     public static function strOrNull($value): ?string
     {
-        if (is_numeric($value)) {
+        if (is_numeric($value) && !is_string($value)) {
             $value = (string)$value;
         }
 
@@ -57,13 +57,17 @@ class RuleUtil
      * @param mixed $value
      * @return null|string
      */
-    public static function strWithoutTrim($value): ?string
+    public static function strOrNullNoTrim($value): ?string
     {
-        if (is_numeric($value)) {
+        if (is_numeric($value) && !is_string($value)) {
             $value = (string)$value;
         }
 
-        return is_string($value) && trim($value) !== '' ? $value : null;
+        if (is_string($value) && trim($value) !== '') {
+            return $value;
+        }
+
+        return null;
     }
 
     /**

@@ -16,6 +16,9 @@ trait ControllerTrait
 {
     public array $behaviorRules = [];
 
+    /** @var callable|null  */
+    public $beforeAuthorizationMethodResolved;
+
     protected ?Model $validatorObject = null;
 
     private function resolveBehaviorRules(string $module, string $controller, string $action): array
@@ -65,11 +68,21 @@ trait ControllerTrait
     {
         $Authorization = Yii::$app->getRequest()->getHeaders()->get('Authorization', '');
         if (preg_match('/^Bearer\s+(.*?)$/', $Authorization, $matches) && !empty($matches[1])) {
+            // call_user_func
+            if (is_callable($this->beforeAuthorizationMethodResolved)) {
+                call_user_func($this->beforeAuthorizationMethodResolved, HttpBearerAuth::class, $matches[1]);
+            }
+
             return [['class' => HttpBearerAuth::class]];
         }
 
         $AccessToken = Yii::$app->getRequest()->get('AccessToken', '');
         if (is_string($AccessToken) && !empty(trim($AccessToken))) {
+            // call_user_func
+            if (is_callable($this->beforeAuthorizationMethodResolved)) {
+                call_user_func($this->beforeAuthorizationMethodResolved, QueryParamAuth::class, $AccessToken);
+            }
+
             return [['class' => QueryParamAuth::class]];
         }
 
