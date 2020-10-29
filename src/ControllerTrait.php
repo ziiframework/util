@@ -66,26 +66,63 @@ trait ControllerTrait
 
     private function resolveAuthorizationMethods(): array
     {
-        $Authorization = Yii::$app->getRequest()->getHeaders()->get('Authorization', '');
-        if (preg_match('/^Bearer\s+(.*?)$/', $Authorization, $matches) && !empty($matches[1])) {
+        $HttpAuthorization = self::extractAuthorizationToken_fromBearer();
+        if ($HttpAuthorization !== null) {
             // call_user_func
             if (is_callable($this->beforeAuthorizationMethodResolved)) {
-                call_user_func($this->beforeAuthorizationMethodResolved, HttpBearerAuth::class, $matches[1]);
+                call_user_func($this->beforeAuthorizationMethodResolved, HttpBearerAuth::class, $HttpAuthorization);
             }
 
             return [['class' => HttpBearerAuth::class]];
         }
 
-        $AccessToken = Yii::$app->getRequest()->get('AccessToken', '');
-        if (is_string($AccessToken) && !empty(trim($AccessToken))) {
+        $QueryAccessToken = self::extractAuthorizationToken_fromQuery();
+        if ($QueryAccessToken !== null) {
             // call_user_func
             if (is_callable($this->beforeAuthorizationMethodResolved)) {
-                call_user_func($this->beforeAuthorizationMethodResolved, QueryParamAuth::class, $AccessToken);
+                call_user_func($this->beforeAuthorizationMethodResolved, QueryParamAuth::class, $QueryAccessToken);
             }
 
             return [['class' => QueryParamAuth::class]];
         }
 
         return [];
+    }
+
+    public static function extractAuthorizationToken(): ?string
+    {
+        $HttpAuthorization = self::extractAuthorizationToken_fromBearer();
+        if ($HttpAuthorization !== null) {
+            return $HttpAuthorization;
+        }
+
+        $QueryAccessToken = self::extractAuthorizationToken_fromQuery();
+        if ($QueryAccessToken !== null) {
+            return $QueryAccessToken;
+        }
+
+        return null;
+    }
+
+    public static function extractAuthorizationToken_fromBearer(): ?string
+    {
+        $HttpAuthorization = Yii::$app->getRequest()->getHeaders()->get('Authorization', '');
+        if (preg_match('/^Bearer\s+(.*?)$/', $HttpAuthorization, $matches) && !empty($matches[1])) {
+            if (!empty(trim($matches[1]))) {
+                return trim($matches[1]);
+            }
+        }
+
+        return null;
+    }
+
+    public static function extractAuthorizationToken_fromQuery(): ?string
+    {
+        $QueryAccessToken = Yii::$app->getRequest()->get('AccessToken', '');
+        if (is_string($QueryAccessToken) && !empty(trim($QueryAccessToken))) {
+            return trim($QueryAccessToken);
+        }
+
+        return null;
     }
 }
