@@ -45,7 +45,7 @@ trait ControllerTrait
             $rules[] = $rule;
         }
 
-        // 如果未定义当前action对应的访问权限，则抛出异常
+        // 如果未定义当前action对应的访问权限，则抛出异常（但需要排除Options请求）
         $islisted = false;
         foreach ($rules as $t_rule) {
             foreach ($t_rule['controllers'] as $rule_controller) {
@@ -57,8 +57,9 @@ trait ControllerTrait
                 }
             }
         }
-        if (!$islisted) {
-            throw new InvalidConfigException("current action $action does not listed in behavior rules");
+
+        if (!$islisted && !Yii::$app->getRequest()->getIsOptions()) {
+            throw new InvalidConfigException("current action [$action] does not listed in behavior rules");
         }
 
         return $rules;
