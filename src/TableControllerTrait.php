@@ -16,7 +16,7 @@ use yii\filters\Cors;
 use yii\helpers\Inflector;
 use yii\web\Response;
 
-trait RESTControllerTrait
+trait TableControllerTrait
 {
     use ControllerTrait;
 
