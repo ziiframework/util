@@ -96,6 +96,13 @@ trait StatelessControllerTrait
             return false;
         }
 
+        // for TableControllerTrait checkAccess()
+        if (method_exists($this, 'checkAccess')) {
+            if (!isset($this->actions()[$action->id])) {
+                $this->checkAccess($action->id);
+            }
+        }
+
         $this->prepareValidatorObject();
         if (($this->validatorObject instanceof Model) && (!$this->validatorObject->validate())) {
             Yii::$app->response->data = ['err' => $this->validatorObject->errors];
