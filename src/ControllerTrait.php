@@ -16,9 +16,6 @@ trait ControllerTrait
 {
     public array $behaviorRules = [];
 
-    /** @var callable|null  */
-    public $beforeAuthorizationMethodResolved;
-
     protected ?Model $validatorObject = null;
 
     private function resolveBehaviorRules(string $module, string $controller, string $action): array
@@ -71,9 +68,8 @@ trait ControllerTrait
     {
         $HttpAuthorization = WebUtil::extractAuthorizationToken_fromBearer();
         if ($HttpAuthorization !== null) {
-            // call_user_func
-            if (is_callable($this->beforeAuthorizationMethodResolved)) {
-                return call_user_func($this->beforeAuthorizationMethodResolved, HttpBearerAuth::class, $HttpAuthorization);
+            if (method_exists($this, 'beforeAuthorizationMethodResolved')) {
+                return $this->beforeAuthorizationMethodResolved(HttpBearerAuth::class, $HttpAuthorization);
             }
 
             return [['class' => HttpBearerAuth::class]];
@@ -81,9 +77,8 @@ trait ControllerTrait
 
         $QueryAccessToken = WebUtil::extractAuthorizationToken_fromQuery();
         if ($QueryAccessToken !== null) {
-            // call_user_func
-            if (is_callable($this->beforeAuthorizationMethodResolved)) {
-                return call_user_func($this->beforeAuthorizationMethodResolved, QueryParamAuth::class, $QueryAccessToken);
+            if (method_exists($this, 'beforeAuthorizationMethodResolved')) {
+                return $this->beforeAuthorizationMethodResolved(QueryParamAuth::class, $QueryAccessToken);
             }
 
             return [['class' => QueryParamAuth::class]];
