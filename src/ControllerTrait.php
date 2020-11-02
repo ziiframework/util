@@ -59,8 +59,10 @@ trait ControllerTrait
         }
 
         if (!$islisted && !Yii::$app->getRequest()->getIsOptions()) {
-            throw new InvalidConfigException("current action [$action] does not listed in behavior rules");
+            throw new InvalidConfigException("Current action [$action] does not listed in behavior rules");
         }
+
+        // TODO 检测空数组，如 'test_action' => []
 
         return $rules;
     }
@@ -71,7 +73,7 @@ trait ControllerTrait
         if ($HttpAuthorization !== null) {
             // call_user_func
             if (is_callable($this->beforeAuthorizationMethodResolved)) {
-                call_user_func($this->beforeAuthorizationMethodResolved, HttpBearerAuth::class, $HttpAuthorization);
+                return call_user_func($this->beforeAuthorizationMethodResolved, HttpBearerAuth::class, $HttpAuthorization);
             }
 
             return [['class' => HttpBearerAuth::class]];
@@ -81,7 +83,7 @@ trait ControllerTrait
         if ($QueryAccessToken !== null) {
             // call_user_func
             if (is_callable($this->beforeAuthorizationMethodResolved)) {
-                call_user_func($this->beforeAuthorizationMethodResolved, QueryParamAuth::class, $QueryAccessToken);
+                return call_user_func($this->beforeAuthorizationMethodResolved, QueryParamAuth::class, $QueryAccessToken);
             }
 
             return [['class' => QueryParamAuth::class]];

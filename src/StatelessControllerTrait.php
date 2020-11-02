@@ -105,7 +105,7 @@ trait StatelessControllerTrait
 
         $this->prepareValidatorObject();
         if (($this->validatorObject instanceof Model) && (!$this->validatorObject->validate())) {
-            Yii::$app->response->data = ['err' => $this->validatorObject->errors];
+            Yii::$app->response->data = ['err' => $this->validatorObject->getErrors()];
             return false;
         }
 
