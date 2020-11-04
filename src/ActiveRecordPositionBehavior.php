@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 /**
  * @link https://github.com/yii2tech
  * @copyright Copyright (c) 2015 Yii2tech
@@ -9,6 +12,7 @@ namespace Zii\Util;
 
 use yii\base\Behavior;
 use yii\base\ModelEvent;
+use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
 
 /**
@@ -24,14 +28,14 @@ use yii\db\BaseActiveRecord;
  *         return [
  *             'positionBehavior' => [
  *                 'class' => PositionBehavior::className(),
- *                 'positionAttribute' => 'position',
+ *                 'positionAttribute' => 'indexed_at',
  *             ],
  *         ];
  *     }
  * }
  * ```
  *
- * @property BaseActiveRecord $owner owner ActiveRecord instance.
+ * @property ActiveRecord $owner owner ActiveRecord instance.
  * @property bool $isFirst whether this record is the first in the list. This property is available since version 1.0.1.
  * @property bool $isLast whether this record is the last in the list. This property is available since version 1.0.1.
  *
@@ -44,13 +48,13 @@ class ActiveRecordPositionBehavior extends Behavior
      * @var string name owner attribute, which will store position value.
      * This attribute should be an integer.
      */
-    public $positionAttribute = 'position';
+    public string $positionAttribute = 'indexed_at';
     /**
      * @var array list of owner attribute names, which values split records into the groups,
      * which should have their own positioning.
      * Example: `['group_id', 'category_id']`
      */
-    public $groupAttributes = [];
+    public array $groupAttributes = [];
 
     /**
      * @var int position value, which should be applied to the model on its save.
@@ -63,7 +67,7 @@ class ActiveRecordPositionBehavior extends Behavior
      * Moves owner record by one position towards the start of the list.
      * @return bool movement successful.
      */
-    public function movePrev()
+    public function movePrev(): bool
     {
         $positionAttribute = $this->positionAttribute;
 
@@ -92,7 +96,7 @@ class ActiveRecordPositionBehavior extends Behavior
      * Moves owner record by one position towards the end of the list.
      * @return bool movement successful.
      */
-    public function moveNext()
+    public function moveNext(): bool
     {
         $positionAttribute = $this->positionAttribute;
 
@@ -121,10 +125,10 @@ class ActiveRecordPositionBehavior extends Behavior
      * Moves owner record to the start of the list.
      * @return bool movement successful.
      */
-    public function moveFirst()
+    public function moveFirst(): bool
     {
         $positionAttribute = $this->positionAttribute;
-        if ($this->owner->$positionAttribute == 1) {
+        if (($this->owner->$positionAttribute === 1) || ($this->owner->$positionAttribute === '1')) {
             return false;
         }
 
@@ -150,7 +154,7 @@ class ActiveRecordPositionBehavior extends Behavior
      * Moves owner record to the end of the list.
      * @return bool movement successful.
      */
-    public function moveLast()
+    public function moveLast(): bool
     {
         $positionAttribute = $this->positionAttribute;
 
@@ -184,7 +188,7 @@ class ActiveRecordPositionBehavior extends Behavior
      * @param int $position number of the new position.
      * @return bool movement successful.
      */
-    public function moveToPosition($position)
+    public function moveToPosition(int $position): bool
     {
         if (!is_numeric($position) || $position < 1) {
             return false;
@@ -250,7 +254,7 @@ class ActiveRecordPositionBehavior extends Behavior
      * @see groupAttributes
      * @return array attribute conditions.
      */
-    protected function createGroupConditionAttributes()
+    protected function createGroupConditionAttributes(): array
     {
         $condition = [];
         if (!empty($this->groupAttributes)) {
@@ -266,7 +270,7 @@ class ActiveRecordPositionBehavior extends Behavior
      * @see groupAttributes
      * @return int records count.
      */
-    protected function countGroupRecords()
+    protected function countGroupRecords(): int
     {
         $query = $this->owner->find();
         if (!empty($this->groupAttributes)) {
@@ -280,7 +284,7 @@ class ActiveRecordPositionBehavior extends Behavior
      * @return bool whether this record is the first in the list.
      * @since 1.0.1
      */
-    public function getIsFirst()
+    public function getIsFirst(): bool
     {
         return $this->owner->getAttribute($this->positionAttribute) == 1;
     }
@@ -291,7 +295,7 @@ class ActiveRecordPositionBehavior extends Behavior
      * @return bool whether this record is the last in the list.
      * @since 1.0.1
      */
-    public function getIsLast()
+    public function getIsLast(): bool
     {
         $position = $this->owner->getAttribute($this->positionAttribute);
         if ($position === null) {
@@ -303,10 +307,10 @@ class ActiveRecordPositionBehavior extends Behavior
 
     /**
      * Finds record previous to this one.
-     * @return BaseActiveRecord|static|null previous record, `null` - if not found.
+     * @return ActiveRecord|null previous record, `null` - if not found.
      * @since 1.0.1
      */
-    public function findPrev()
+    public function findPrev(): ?ActiveRecord
     {
         if ($this->getIsFirst()) {
             return null;
@@ -325,10 +329,10 @@ class ActiveRecordPositionBehavior extends Behavior
 
     /**
      * Finds record next to this one.
-     * @return BaseActiveRecord|static|null next record, `null` - if not found.
+     * @return ActiveRecord|null next record, `null` - if not found.
      * @since 1.0.1
      */
-    public function findNext()
+    public function findNext(): ?ActiveRecord
     {
         $position = $this->owner->getAttribute($this->positionAttribute);
 
@@ -344,10 +348,10 @@ class ActiveRecordPositionBehavior extends Behavior
     /**
      * Finds the first record in the list.
      * If this record is the first one, method will return its self reference.
-     * @return BaseActiveRecord|static|null next record, `null` - if not found.
+     * @return ActiveRecord|null next record, `null` - if not found.
      * @since 1.0.1
      */
-    public function findFirst()
+    public function findFirst(): ?ActiveRecord
     {
         if ($this->getIsFirst()) {
             return $this->owner;
@@ -364,10 +368,10 @@ class ActiveRecordPositionBehavior extends Behavior
 
     /**
      * Finds the last record in the list.
-     * @return BaseActiveRecord|static|null next record, `null` - if not found.
+     * @return ActiveRecord|null next record, `null` - if not found.
      * @since 1.0.1
      */
-    public function findLast()
+    public function findLast(): ?ActiveRecord
     {
         $query = $this->owner->find();
         if (!empty($this->groupAttributes)) {
@@ -384,7 +388,7 @@ class ActiveRecordPositionBehavior extends Behavior
     /**
      * @inheritdoc
      */
-    public function events()
+    public function events(): array
     {
         return [
             BaseActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
@@ -399,7 +403,7 @@ class ActiveRecordPositionBehavior extends Behavior
      * Handles owner 'beforeInsert' owner event, preparing its positioning.
      * @param ModelEvent $event event instance.
      */
-    public function beforeInsert($event)
+    public function beforeInsert($event): void
     {
         $positionAttribute = $this->positionAttribute;
         if ($this->owner->$positionAttribute > 0) {
@@ -412,7 +416,7 @@ class ActiveRecordPositionBehavior extends Behavior
      * Handles owner 'beforeInsert' owner event, preparing its possible re-positioning.
      * @param ModelEvent $event event instance.
      */
-    public function beforeUpdate($event)
+    public function beforeUpdate($event): void
     {
         $positionAttribute = $this->positionAttribute;
 
@@ -443,7 +447,7 @@ class ActiveRecordPositionBehavior extends Behavior
      * This event supports other functionality.
      * @param ModelEvent $event event instance.
      */
-    public function afterSave($event)
+    public function afterSave($event): void
     {
         if ($this->positionOnSave !== null) {
             $this->moveToPosition($this->positionOnSave);
@@ -455,7 +459,7 @@ class ActiveRecordPositionBehavior extends Behavior
      * Handles owner 'beforeDelete' owner event, moving it to the end of the list before deleting.
      * @param ModelEvent $event event instance.
      */
-    public function beforeDelete($event)
+    public function beforeDelete($event): void
     {
         $this->moveLast();
     }
