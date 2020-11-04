@@ -13,7 +13,6 @@ namespace Zii\Util;
 use yii\base\Behavior;
 use yii\base\ModelEvent;
 use yii\db\ActiveRecord;
-use yii\db\BaseActiveRecord;
 
 /**
  * PositionBehavior allows managing custom order for the records in the database.
@@ -71,7 +70,7 @@ class ActiveRecordPositionBehavior extends Behavior
     {
         $positionAttribute = $this->positionAttribute;
 
-        /* @var $previousRecord BaseActiveRecord */
+        /* @var $previousRecord ActiveRecord */
         $previousRecord = $this->owner->find()
             ->andWhere($this->createGroupConditionAttributes())
             ->andWhere([$positionAttribute => ($this->owner->$positionAttribute - 1)])
@@ -100,7 +99,7 @@ class ActiveRecordPositionBehavior extends Behavior
     {
         $positionAttribute = $this->positionAttribute;
 
-        /* @var $nextRecord BaseActiveRecord */
+        /* @var $nextRecord ActiveRecord */
         $nextRecord = $this->owner->find()
             ->andWhere($this->createGroupConditionAttributes())
             ->andWhere([$positionAttribute => ($this->owner->$positionAttribute + 1)])
@@ -391,11 +390,11 @@ class ActiveRecordPositionBehavior extends Behavior
     public function events(): array
     {
         return [
-            BaseActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
-            BaseActiveRecord::EVENT_BEFORE_UPDATE => 'beforeUpdate',
-            BaseActiveRecord::EVENT_AFTER_INSERT => 'afterSave',
-            BaseActiveRecord::EVENT_AFTER_UPDATE => 'afterSave',
-            BaseActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
+            ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
+            ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeUpdate',
+            ActiveRecord::EVENT_AFTER_INSERT => 'afterSave',
+            ActiveRecord::EVENT_AFTER_UPDATE => 'afterSave',
+            ActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
         ];
     }
 
