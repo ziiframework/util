@@ -57,10 +57,10 @@ class ActiveRecordPositionBehavior extends Behavior
     public array $groupAttributes = [];
 
     /**
-     * @var int position value, which should be applied to the model on its save.
+     * @var int|null position value, which should be applied to the model on its save.
      * Internal usage only.
      */
-    private $positionOnSave;
+    private ?int $positionOnSave = null;
 
 
     /**
