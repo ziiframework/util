@@ -380,12 +380,18 @@ class ActiveRecordPositionBehavior extends Behavior
 
         if ($step > 0) {
             $query->andWhere(['>', $positionAttribute, $this->owner->$positionAttribute]);
-            $query->orderBy(new Expression("ABS($positionAttribute - $step) DESC")); // find furthest
         } else if ($step < 0) {
             $query->andWhere(['<', $positionAttribute, $this->owner->$positionAttribute]);
-            $query->orderBy(new Expression("ABS($positionAttribute - $step) DESC")); // find furthest
         } else {
             throw new InvalidArgumentException('Step cannot eq 0');
+        }
+
+        if ($step === 1) {
+            $query->orderBy("$positionAttribute ASC");
+        } else if ($step === -1) {
+            $query->orderBy("$positionAttribute DESC");
+        } else {
+            $query->orderBy(new Expression("ABS($positionAttribute - $step) DESC")); // find furthest
         }
 
         return $query->limit(1)->one();
