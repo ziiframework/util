@@ -65,6 +65,7 @@ class ActiveRecordPositionBehavior extends Behavior
      */
     private ?int $positionOnSave = null; // temp value before event update
 
+
     private array $_errors = [];
 
     public function getErrors(): array
@@ -85,7 +86,7 @@ class ActiveRecordPositionBehavior extends Behavior
     {
         $positionAttribute = $this->positionAttribute;
 
-        $upstairs_Owner = $this->findRecordUsingOwnerPosition(1); // +1
+        $upstairs_Owner = $this->findRecordUsingOwnerPosition(1);
 
         if (!($upstairs_Owner instanceof ActiveRecord)) {
             $this->_errors[] = 'Cannot find upstairs Owner';
