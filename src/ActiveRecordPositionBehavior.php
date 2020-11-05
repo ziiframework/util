@@ -11,10 +11,12 @@ declare(strict_types=1);
 namespace Zii\Util;
 
 use yii\base\Behavior;
+use yii\base\InvalidArgumentException;
 use yii\base\ModelEvent;
 use yii\base\NotSupportedException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * PositionBehavior allows managing custom order for the records in the database.
@@ -79,20 +81,50 @@ class ActiveRecordPositionBehavior extends Behavior
      * Moves owner record by one position towards the start of the list.
      * @return bool movement successful.
      */
-    public function movePrev(): bool
+    public function move_upstairs(): bool
     {
         $positionAttribute = $this->positionAttribute;
 
-        $previousRecord = $this->findRecordUsingOwnerPosition(-1);
+        $upstairs_Owner = $this->findRecordUsingOwnerPosition(1); // +1
 
-        if (!($previousRecord instanceof ActiveRecord)) {
-            $this->_errors[] = 'Cannot find previous Owner';
+        if (!($upstairs_Owner instanceof ActiveRecord)) {
+            $this->_errors[] = 'Cannot find upstairs Owner';
             return false;
         }
 
-        $affected_rows = $previousRecord->updateAttributes([$positionAttribute => $this->owner->$positionAttribute]);
+        $affected_rows = $upstairs_Owner->updateAttributes([$positionAttribute => $this->owner->$positionAttribute]);
         if ($affected_rows !== 1) {
-            $this->_errors[] = "Move previous Owner failed, affected rows is $affected_rows";
+            $this->_errors[] = "Move upstairs Owner failed, affected rows is $affected_rows";
+            return false;
+        }
+
+        $affected_rows = $this->owner->updateAttributes([$positionAttribute => $this->owner->$positionAttribute + 1]);
+        if ($affected_rows !== 1) {
+            $this->_errors[] = "Move current Owner failed, affected rows is $affected_rows";
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Moves owner record by one position towards the end of the list.
+     * @return bool movement successful.
+     */
+    public function move_downstairs(): bool
+    {
+        $positionAttribute = $this->positionAttribute;
+
+        $downstairs_Owner = $this->findRecordUsingOwnerPosition(-1);
+
+        if (!($downstairs_Owner instanceof ActiveRecord)) {
+            $this->_errors[] = 'Cannot find downstairs Owner';
+            return false;
+        }
+
+        $affected_rows = $downstairs_Owner->updateAttributes([$positionAttribute => $this->owner->$positionAttribute]);
+        if ($affected_rows !== 1) {
+            $this->_errors[] = "Move downstairs Owner failed, affected rows is $affected_rows";
             return false;
         }
 
@@ -106,62 +138,21 @@ class ActiveRecordPositionBehavior extends Behavior
     }
 
     /**
-     * Moves owner record by one position towards the end of the list.
-     * @return bool movement successful.
-     */
-    public function moveNext(): bool
-    {
-        $positionAttribute = $this->positionAttribute;
-
-        /* @var $nextRecord ActiveRecord */
-        $nextRecord = $this->findRecordUsingOwnerPosition(1);
-
-        if (!($nextRecord instanceof ActiveRecord)) {
-            $this->_errors[] = 'Cannot find next Owner';
-            return false;
-        }
-
-        $affected_rows = $nextRecord->updateAttributes([$positionAttribute => $this->owner->$positionAttribute]);
-        if ($affected_rows !== 1) {
-            $this->_errors[] = "Move next Owner failed, affected rows is $affected_rows";
-            return false;
-        }
-
-        $affected_rows = $this->owner->updateAttributes([$positionAttribute => $this->owner->getAttribute($positionAttribute) + 1]);
-        if ($affected_rows !== 1) {
-            $this->_errors[] = "Move current Owner failed, affected rows is $affected_rows";
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Moves owner record to the start of the list.
      * @return bool movement successful.
      */
-    public function moveFirst(): bool
+    public function move_roof(): bool
     {
         $positionAttribute = $this->positionAttribute;
 
-        if (($this->owner->$positionAttribute === 1) || ($this->owner->$positionAttribute === '1')) {
-            return true;
-        }
+        $roof_Owner = $this->findRecordUsingOwnerSort('DESC');
 
-        $affected_rows = $this->owner->updateAllCounters(
-            [$positionAttribute => 1], // +1
-            [
-                'and',
-                $this->createGroupConditionAttributes(),
-                ['<', $positionAttribute, $this->owner->$positionAttribute]
-            ]
-        );
-        if ($affected_rows === 0) {
-            $this->_errors[] = "Move other Owners failed, affected rows is $affected_rows";
+        if (!($roof_Owner instanceof ActiveRecord)) {
+            $this->_errors[] = 'Cannot find roof Owner';
             return false;
         }
 
-        $affected_rows = $this->owner->updateAttributes([$positionAttribute => 1]);
+        $affected_rows = $this->owner->updateAttributes([$positionAttribute => $roof_Owner->$positionAttribute + 1]);
         if ($affected_rows !== 1) {
             $this->_errors[] = "Move current Owner failed, affected rows is $affected_rows";
             return false;
@@ -174,32 +165,18 @@ class ActiveRecordPositionBehavior extends Behavior
      * Moves owner record to the end of the list.
      * @return bool movement successful.
      */
-    public function moveLast(): bool
+    public function move_bottom(): bool
     {
         $positionAttribute = $this->positionAttribute;
 
-        $last_Owner = $this->findLast();
-        if ($last_Owner === null) {
-            $this->_errors[] = "Cannot find last Owner";
+        $bottom_Owner = $this->findRecordUsingOwnerSort('ASC');
+
+        if (!($bottom_Owner instanceof ActiveRecord)) {
+            $this->_errors[] = "Cannot find bottom Owner";
             return false;
         }
 
-        $last_Owner_position = $last_Owner->$positionAttribute;
-
-        $affected_rows = $this->owner->updateAllCounters(
-            [$positionAttribute => -1],
-            [
-                'and',
-                $this->createGroupConditionAttributes(),
-                ['>', $positionAttribute, $this->owner->$positionAttribute]
-            ]
-        );
-        if ($affected_rows === 0) {
-            $this->_errors[] = "Move other Owners failed, affected rows is $affected_rows";
-            return false;
-        }
-
-        $affected_rows = $this->owner->updateAttributes([$positionAttribute => $last_Owner_position]);
+        $affected_rows = $this->owner->updateAttributes([$positionAttribute => $bottom_Owner->$positionAttribute - 1]);
         if ($affected_rows !== 1) {
             $this->_errors[] = "Move current Owner failed, affected rows is $affected_rows";
             return false;
@@ -217,6 +194,7 @@ class ActiveRecordPositionBehavior extends Behavior
      */
     public function moveToPosition(int $position): bool
     {
+        throw new NotSupportedException('TODO');
         if ($position < 1) {
             $this->_errors[] = "Cannot set position < 1";
             return false;
@@ -270,7 +248,7 @@ class ActiveRecordPositionBehavior extends Behavior
             $last_Owner_position = $last_Owner->$positionAttribute;
 
             if ($position >= $last_Owner_position) {
-                return $this->moveLast();
+                return $this->move_bottom();
             }
 
             $affected_rows = $this->owner->updateAllCounters(
@@ -330,13 +308,13 @@ class ActiveRecordPositionBehavior extends Behavior
      * @return bool whether this record is the first in the list.
      * @since 1.0.1
      */
-    public function getIsFirst(): bool
+    public function is_roof(): bool
     {
         $positionAttribute = $this->positionAttribute;
 
-        $first_Owner = $this->findRecordUsingOwnerSort('ASC');
-        if ($first_Owner === null) {
-            $this->_errors[] = "Cannot find first Owner";
+        $roof_Owner = $this->findRecordUsingOwnerSort('DESC');
+        if (!($roof_Owner instanceof ActiveRecord)) {
+            $this->_errors[] = "Cannot find roof Owner";
             return false;
         }
 
@@ -345,12 +323,12 @@ class ActiveRecordPositionBehavior extends Behavior
             $this_Owner_position = (int)$this_Owner_position;
         }
 
-        $first_Owner_position = $first_Owner->$positionAttribute;
-        if (is_numeric($first_Owner_position)) {
-            $first_Owner_position = (int)$first_Owner_position;
+        $roof_Owner_position = $roof_Owner->$positionAttribute;
+        if (is_numeric($roof_Owner_position)) {
+            $roof_Owner_position = (int)$roof_Owner_position;
         }
 
-        return $this_Owner_position === $first_Owner_position;
+        return $this_Owner_position === $roof_Owner_position;
     }
 
     /**
@@ -359,13 +337,13 @@ class ActiveRecordPositionBehavior extends Behavior
      * @return bool whether this record is the last in the list.
      * @since 1.0.1
      */
-    public function getIsLast(): bool
+    public function is_bottom(): bool
     {
         $positionAttribute = $this->positionAttribute;
 
-        $last_Owner = $this->findRecordUsingOwnerSort('DESC');
-        if ($last_Owner === null) {
-            $this->_errors[] = "Cannot find last Owner";
+        $bottom_Owner = $this->findRecordUsingOwnerSort('ASC');
+        if ($bottom_Owner === null) {
+            $this->_errors[] = "Cannot find bottom Owner";
             return false;
         }
 
@@ -374,12 +352,12 @@ class ActiveRecordPositionBehavior extends Behavior
             $this_Owner_position = (int)$this_Owner_position;
         }
 
-        $last_Owner_position = $last_Owner->$positionAttribute;
-        if (is_numeric($last_Owner_position)) {
-            $last_Owner_position = (int)$last_Owner_position;
+        $bottom_Owner_position = $bottom_Owner->$positionAttribute;
+        if (is_numeric($bottom_Owner_position)) {
+            $bottom_Owner_position = (int)$bottom_Owner_position;
         }
 
-        return $this_Owner_position === $last_Owner_position;
+        return $this_Owner_position === $bottom_Owner_position;
     }
 
     private function createGroupQuery(): ActiveQuery
@@ -393,22 +371,23 @@ class ActiveRecordPositionBehavior extends Behavior
         return $query;
     }
 
-    private function findRecordUsingOwnerPosition(int $counter, bool $reset_counter = false): ?ActiveRecord
+    private function findRecordUsingOwnerPosition(int $step): ?ActiveRecord
     {
-        $owner_position = 0;
-
-        if (!$reset_counter) {
-            $owner_position = $this->owner->getAttribute($this->positionAttribute);
-            if (!is_numeric($owner_position)) {
-                return null;
-            }
-        }
+        $positionAttribute = $this->positionAttribute;
 
         $query = $this->createGroupQuery();
 
-        $query->andWhere([$this->positionAttribute => $counter + $owner_position]);
+        if ($step > 0) {
+            $query->andWhere(['>', $positionAttribute, $this->owner->$positionAttribute]);
+            $query->orderBy(new Expression("ABS($positionAttribute - $step) DESC")); // find furthest
+        } else if ($step < 0) {
+            $query->andWhere(['<', $positionAttribute, $this->owner->$positionAttribute]);
+            $query->orderBy(new Expression("ABS($positionAttribute - $step) DESC")); // find furthest
+        } else {
+            throw new InvalidArgumentException('Step cannot eq 0');
+        }
 
-        return $query->one();
+        return $query->limit(1)->one();
     }
 
     private function findRecordUsingOwnerSort(string $sort): ?ActiveRecord
@@ -425,13 +404,13 @@ class ActiveRecordPositionBehavior extends Behavior
      * @return ActiveRecord|null previous record, `null` - if not found.
      * @since 1.0.1
      */
-    public function findPrev(): ?ActiveRecord
+    public function find_upstairs(): ?ActiveRecord
     {
-        if ($this->getIsFirst()) {
+        if ($this->is_roof()) {
             return null;
         }
 
-        return $this->findRecordUsingOwnerPosition(-1);
+        return $this->findRecordUsingOwnerPosition(1);
     }
 
     /**
@@ -439,9 +418,13 @@ class ActiveRecordPositionBehavior extends Behavior
      * @return ActiveRecord|null next record, `null` - if not found.
      * @since 1.0.1
      */
-    public function findNext(): ?ActiveRecord
+    public function find_downstairs(): ?ActiveRecord
     {
-        return $this->findRecordUsingOwnerPosition(1);
+        if ($this->is_bottom()) {
+            return null;
+        }
+
+        return $this->findRecordUsingOwnerPosition(-1);
     }
 
     /**
@@ -450,7 +433,7 @@ class ActiveRecordPositionBehavior extends Behavior
      * @return ActiveRecord|null next record, `null` - if not found.
      * @since 1.0.1
      */
-    public function findFirst(): ?ActiveRecord
+    public function find_bottom(): ?ActiveRecord
     {
         return $this->findRecordUsingOwnerSort('ASC');
     }
@@ -460,12 +443,10 @@ class ActiveRecordPositionBehavior extends Behavior
      * @return ActiveRecord|null next record, `null` - if not found.
      * @since 1.0.1
      */
-    public function findLast(): ?ActiveRecord
+    public function find_roof(): ?ActiveRecord
     {
         return $this->findRecordUsingOwnerSort('DESC');
     }
-
-    // Events :
 
     /**
      * @inheritdoc
@@ -473,59 +454,9 @@ class ActiveRecordPositionBehavior extends Behavior
     public function events(): array
     {
         return [
-            ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
-            ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeUpdate',
-            ActiveRecord::EVENT_AFTER_INSERT => 'afterSave',
-            ActiveRecord::EVENT_AFTER_UPDATE => 'afterSave',
-            ActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
+            ActiveRecord::EVENT_AFTER_INSERT => 'event_afterSave',
+            ActiveRecord::EVENT_AFTER_UPDATE => 'event_afterSave',
         ];
-    }
-
-    /**
-     * Handles owner 'beforeInsert' owner event, preparing its positioning.
-     * @param ModelEvent $event event instance.
-     */
-    public function beforeInsert(ModelEvent $event): void
-    {
-        $positionAttribute = $this->positionAttribute;
-
-        if ($this->owner->$positionAttribute > 0) {
-            $this->positionOnSave = $this->owner->$positionAttribute;
-        }
-
-        $last_Owner = $this->findRecordUsingOwnerSort('DESC');
-
-        if ($last_Owner === null) {
-            $this->owner->$positionAttribute = 1;
-        } else {
-            $this->owner->$positionAttribute = $last_Owner->$positionAttribute + 1;
-        }
-    }
-
-    /**
-     * Handles owner 'beforeInsert' owner event, preparing its possible re-positioning.
-     * @param ModelEvent $event event instance.
-     */
-    public function beforeUpdate(ModelEvent $event): void
-    {
-        $positionAttribute = $this->positionAttribute;
-
-        $isNewGroup = false;
-        foreach ($this->groupAttributes as $groupAttribute) {
-            if ($this->owner->isAttributeChanged($groupAttribute, false)) {
-                $isNewGroup = true;
-                break;
-            }
-        }
-
-        if ($isNewGroup) {
-            throw new NotSupportedException('TODO');
-        } else {
-            if ($this->owner->isAttributeChanged($positionAttribute, false)) {
-                $this->positionOnSave = $this->owner->$positionAttribute;
-                $this->owner->$positionAttribute = $this->owner->getOldAttribute($positionAttribute);
-            }
-        }
     }
 
     /**
@@ -534,21 +465,8 @@ class ActiveRecordPositionBehavior extends Behavior
      * This event supports other functionality.
      * @param ModelEvent $event event instance.
      */
-    public function afterSave(ModelEvent $event): void
+    public function event_afterSave(ModelEvent $event): void
     {
-        if ($this->positionOnSave !== null) {
-            $this->moveToPosition($this->positionOnSave);
-        }
-
-        $this->positionOnSave = null;
-    }
-
-    /**
-     * Handles owner 'beforeDelete' owner event, moving it to the end of the list before deleting.
-     * @param ModelEvent $event event instance.
-     */
-    public function beforeDelete(ModelEvent $event): void
-    {
-        $this->moveLast();
+        throw new NotSupportedException('TODO');
     }
 }
