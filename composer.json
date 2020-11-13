@@ -22,7 +22,8 @@
         "ext-mbstring": "*",
         "ext-json": "*",
         "ziiframework/zii": "3.0.x-dev",
-        "nette/php-generator": "^3.4"
+        "nette/php-generator": "^3.4",
+        "symfony/serializer": "^5.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.5"
