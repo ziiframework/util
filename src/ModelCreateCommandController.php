@@ -179,7 +179,7 @@ abstract class ModelCreateCommandController extends BasicCommandController
         }
 
         foreach ($_schema->columns as $column) {
-            if (in_array($column->name, ['id', 'client_ip', 'created_at'], true)) {
+            if (in_array($column->name, ['id', 'client_ip', 'created_at', 'updated_at'], true)) {
                 continue;
             }
 
