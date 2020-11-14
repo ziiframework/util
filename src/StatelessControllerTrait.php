@@ -33,6 +33,7 @@ trait StatelessControllerTrait
             $this->validatorObject = $validatorObject;
             $this->validatorObject->setScenario(Inflector::id2camel($php_url_part[3]));
             if (Yii::$app->getRequest()->getIsPost()) {
+                $this->validatorObject->setAttributes(Yii::$app->getRequest()->get());
                 $this->validatorObject->setAttributes(Yii::$app->getRequest()->post());
             } else {
                 $this->validatorObject->setAttributes(Yii::$app->getRequest()->get());
