@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "20dd582c8162c3d383f8247e11481b4e",
+    "content-hash": "1348c83818c8e5515e40edcffe3724c7",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -625,16 +625,16 @@
         },
         {
             "name": "ziiframework/composer",
-            "version": "dev-master",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ziiframework/composer.git",
-                "reference": "5cc2953fb7ac0c09b6b8b0ce4eae57ae38745522"
+                "reference": "ac73d872fe9bcd03a0843676b908ded44370e8d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ziiframework/composer/zipball/5cc2953fb7ac0c09b6b8b0ce4eae57ae38745522",
-                "reference": "5cc2953fb7ac0c09b6b8b0ce4eae57ae38745522",
+                "url": "https://api.github.com/repos/ziiframework/composer/zipball/ac73d872fe9bcd03a0843676b908ded44370e8d2",
+                "reference": "ac73d872fe9bcd03a0843676b908ded44370e8d2",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -655,7 +655,7 @@
             "extra": {
                 "class": "yii\\composer\\Plugin",
                 "branch-alias": {
-                    "dev-master": "3.0.x-dev"
+                    "dev-master": "4.0.x-dev"
                 }
             },
             "autoload": {
@@ -680,20 +680,20 @@
                 "composer",
                 "zii-framework"
             ],
-            "time": "2020-09-11T14:42:29+00:00"
+            "time": "2020-11-17T15:11:02+00:00"
         },
         {
             "name": "ziiframework/zii",
-            "version": "dev-master",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ziiframework/zii.git",
-                "reference": "eab3a45b6a10ed113391c451fce442ac0584e78a"
+                "reference": "d67faa6445cad25d4d1f2d59b4a8dd83755a3226"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ziiframework/zii/zipball/eab3a45b6a10ed113391c451fce442ac0584e78a",
-                "reference": "eab3a45b6a10ed113391c451fce442ac0584e78a",
+                "url": "https://api.github.com/repos/ziiframework/zii/zipball/d67faa6445cad25d4d1f2d59b4a8dd83755a3226",
+                "reference": "d67faa6445cad25d4d1f2d59b4a8dd83755a3226",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -711,10 +711,10 @@
                 "ext-ctype": "*",
                 "ext-json": "*",
                 "ext-mbstring": "*",
-                "ezyang/htmlpurifier": "~4.6",
+                "ezyang/htmlpurifier": "~4.13.0",
                 "lib-pcre": "*",
                 "php": ">=7.3.0",
-                "ziiframework/composer": "3.0.x-dev"
+                "ziiframework/composer": "~3.1.1"
             },
             "require-dev": {
                 "cebe/indent": "~1.0.2",
@@ -727,7 +727,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0.x-dev"
+                    "dev-master": "4.0.x-dev"
                 }
             },
             "autoload": {
@@ -753,7 +753,7 @@
                 "framework",
                 "zii"
             ],
-            "time": "2020-11-13T12:43:22+00:00"
+            "time": "2020-11-17T15:15:55+00:00"
         }
     ],
     "packages-dev": [
@@ -2414,9 +2414,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "ziiframework/zii": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
