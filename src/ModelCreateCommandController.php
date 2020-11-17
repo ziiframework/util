@@ -217,7 +217,9 @@ abstract class ModelCreateCommandController extends BasicCommandController
             ->setReturnType('array')
             ->addComment('@inheritdoc')
             ->setBody('return array_merge(parent::extraFields(), ?);', [
-                array_map('lcfirst', array_column($this->_ruleExist, 'targetClassName')),
+                array_map(function (string $f): string {
+                    return 'db' . ucfirst($f);
+                }, array_column($this->_ruleExist, 'targetClassName')),
             ]);
 
         // rules
@@ -520,11 +522,11 @@ abstract class ModelCreateCommandController extends BasicCommandController
                 $this->_class->addComment(implode(' ', [
                     '@property',
                     $item['targetClassName'],
-                    '$' . lcfirst($item['targetClassName']),
+                    '$db' . ucfirst($item['targetClassName']),
                     '关联' . str_replace('表', '', $item['targetClassComment']) . '[ActiveRecord].',
                 ]));
                 // Table Relations
-                $this->_class->addMethod("get{$item['targetClassName']}")
+                $this->_class->addMethod("getDb{$item['targetClassName']}")
                     ->setReturnType('?ActiveQuery')
                     ->addComment("关联{$item['targetClassComment']}")
                     ->addComment("@return null|ActiveQuery|{$item['targetClassName']}")
