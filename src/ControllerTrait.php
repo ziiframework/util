@@ -81,7 +81,7 @@ trait ControllerTrait
                 return $this->beforeAuthorizationMethodResolved(QueryParamAuth::class, $QueryAccessToken);
             }
 
-            return [['class' => QueryParamAuth::class]];
+            return [['class' => QueryParamAuth::class, 'tokenParam' => 'AccessToken']];
         }
 
         return [];
