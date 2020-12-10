@@ -43,7 +43,7 @@ use yii\db\Expression;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 1.0
  */
-class ActiveRecordPositionBehavior extends Behavior
+final class ActiveRecordPositionBehavior extends Behavior
 {
     /**
      * @var string name owner attribute, which will store position value.

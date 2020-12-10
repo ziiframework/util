@@ -9,7 +9,7 @@ use Symfony\Component\Serializer\Serializer;
 use yii\base\BaseObject;
 use yii\web\RequestParserInterface;
 
-class XmlParser extends BaseObject implements RequestParserInterface
+final class XmlParser extends BaseObject implements RequestParserInterface
 {
     /**
      * {@inheritdoc}

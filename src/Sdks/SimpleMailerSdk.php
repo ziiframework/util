@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Zii\Util;
+namespace Zii\Util\Sdks;
 
 use Yii;
+use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
 use Throwable;
 
-class SimpleMailer
+final class SimpleMailerSdk extends BaseObject
 {
     public const EVENT_beforeMailSend = 'SimpleMailer_beforeMailSend';
     public const EVENT_afterMailSend = 'SimpleMailer_afterMailSend';
