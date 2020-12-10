@@ -18,7 +18,7 @@ use yii\db\ColumnSchema;
 use yii\db\TableSchema;
 use yii\helpers\Inflector;
 
-abstract class ModelCreateCommandController extends BasicCommandController
+abstract class ModelCreateCommand extends BasicCommandController
 {
     public static string $identityInterfaceImplement = 'yh';
 
