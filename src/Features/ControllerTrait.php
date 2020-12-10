@@ -60,7 +60,12 @@ trait ControllerTrait
             throw new InvalidConfigException("Current action [$action] does not listed in behavior rules");
         }
 
-        // TODO 检测空数组，如 'test_action' => []
+        // 检测空数组
+        foreach ($rules as $t_rule) {
+            if (empty($t_rule['roles'])) {
+                throw new InvalidConfigException("[roles] 不能为空");
+            }
+        }
 
         return $rules;
     }
