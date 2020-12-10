@@ -44,19 +44,19 @@ trait ControllerTrait
         }
 
         // 如果未定义当前action对应的访问权限，则抛出异常（但需要排除Options请求）
-        $islisted = false;
+        $t_is_listed = false;
         foreach ($rules as $t_rule) {
             foreach ($t_rule['controllers'] as $rule_controller) {
                 foreach ($t_rule['actions'] as $rule_action) {
                     if ("$rule_controller/$rule_action" === "$module/$controller/$action") {
-                        $islisted = true;
+                        $t_is_listed = true;
                         break 3;
                     }
                 }
             }
         }
 
-        if (!$islisted && !Yii::$app->getRequest()->getIsOptions()) {
+        if (!$t_is_listed && !Yii::$app->getRequest()->getIsOptions()) {
             throw new InvalidConfigException("Current action [$action] does not listed in behavior rules");
         }
 
