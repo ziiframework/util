@@ -24,10 +24,10 @@
         "ziiframework/zii": "~3.1.1",
         "imangazaliev/didom": "~1.16.0",
         "sabberworm/php-css-parser": "~8.3.0",
-        "nette/php-generator": "~3.5.0",
         "symfony/serializer": "~5.1.0"
     },
     "require-dev": {
+        "nette/php-generator": "~3.5.0",
         "phpunit/phpunit": "^8.5"
     },
     "scripts": {
