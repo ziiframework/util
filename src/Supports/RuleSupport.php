@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zii\Util;
+namespace Zii\Util\Supports;
 
 use yii\helpers\Json;
 use yii\validators\DateValidator;
@@ -13,7 +13,7 @@ use Sabberworm\CSS\Rule\Rule as CssRule;
 use Sabberworm\CSS\Parser as CssParser;
 use Sabberworm\CSS\RuleSet\RuleSet as CssRuleSet;
 
-class RuleUtil
+class RuleSupport
 {
     public static function strOrNull($value): ?string
     {

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Zii\Util;
+namespace Zii\Util\Supports;
 
 use Yii;
 use yii\db\ColumnSchema;
 use yii\db\Exception;
 use yii\db\mysql\Schema;
 
-class DbUtil
+class DbSupport
 {
     public static function getTableComment(string $tb): ?string
     {

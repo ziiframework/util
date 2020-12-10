@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Zii\Util;
+namespace Zii\Util\Supports;
 
 use Yii;
 
-class WebUtil
+class WebSupport
 {
     public static function extractAuthorizationToken(): ?string
     {
