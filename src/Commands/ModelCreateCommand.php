@@ -14,8 +14,8 @@ use yii\db\ActiveQuery;
 use yii\db\ColumnSchema;
 use yii\db\TableSchema;
 use yii\helpers\Inflector;
-use Zii\Util\DbUtil;
-use Zii\Util\RuleUtil;
+use Zii\Util\Supports\DbSupport;
+use Zii\Util\Supports\RuleSupport;
 
 abstract class ModelCreateCommand extends \yii\console\Controller
 {
@@ -170,10 +170,10 @@ abstract class ModelCreateCommand extends \yii\console\Controller
         }
 
         // Table Comment
-        $this->_class->addComment(DbUtil::getTableComment($tableName). "\n");
+        $this->_class->addComment(DbSupport::getTableComment($tableName). "\n");
 
         // Table Indexes
-        foreach (DbUtil::getTableIndexes($tableName) as $index) {
+        foreach (DbSupport::getTableIndexes($tableName) as $index) {
             $this->_indexes[$index['Column_name']] = (bool)($index['Non_unique'] * 1) ? 'indexed' : 'unique';
         }
 
@@ -292,7 +292,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
         }
 
         // tinyint
-        if (DbUtil::castDataType($column->dbType) === 'tinyint') {
+        if (DbSupport::castDataType($column->dbType) === 'tinyint') {
             // $column->size === 1
             // Warning: #1681 Integer display width is deprecated and will be removed in a future release.
             if (preg_match('/^(is|has|can|enable)_/', $column->name)) {
@@ -302,44 +302,44 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                 $this->_typeCastAttributes[$column->name] = AttributeTypecastBehavior::TYPE_INTEGER;
                 $this->_ruleInteger[] = [
                     'name' => $column->name,
-                    'max' => DbUtil::getColumnMaxValue($column),
+                    'max' => DbSupport::getColumnMaxValue($column),
                 ];
             }
         }
 
         // int
-        if (in_array(DbUtil::castDataType($column->dbType), ['smallint', 'mediumint', 'int', 'integer', 'bigint'], true)) {
+        if (in_array(DbSupport::castDataType($column->dbType), ['smallint', 'mediumint', 'int', 'integer', 'bigint'], true)) {
             $this->_ruleInteger[] = [
                 'name' => $column->name,
-                'max' => DbUtil::getColumnMaxValue($column),
+                'max' => DbSupport::getColumnMaxValue($column),
             ];
         }
 
         // double、float、decimal TODO
-        if (DbUtil::castDataType($column->dbType) === 'double') {
+        if (DbSupport::castDataType($column->dbType) === 'double') {
             $this->_ruleInteger[] = [
                 'name' => $column->name,
-                'max' => DbUtil::getColumnMaxValue($column),
+                'max' => DbSupport::getColumnMaxValue($column),
             ];
             $this->_typeCastAttributes[$column->name] = AttributeTypecastBehavior::TYPE_INTEGER;
         }
-        if (DbUtil::castDataType($column->dbType) === 'float') {
+        if (DbSupport::castDataType($column->dbType) === 'float') {
             $this->_ruleInteger[] = [
                 'name' => $column->name,
-                'max' => DbUtil::getColumnMaxValue($column),
+                'max' => DbSupport::getColumnMaxValue($column),
             ];
             $this->_typeCastAttributes[$column->name] = AttributeTypecastBehavior::TYPE_INTEGER;
         }
-        if (DbUtil::castDataType($column->dbType) === 'decimal') {
+        if (DbSupport::castDataType($column->dbType) === 'decimal') {
             $this->_ruleInteger[] = [
                 'name' => $column->name,
-                'max' => DbUtil::getColumnMaxValue($column),
+                'max' => DbSupport::getColumnMaxValue($column),
             ];
             $this->_typeCastAttributes[$column->name] = AttributeTypecastBehavior::TYPE_INTEGER;
         }
 
         // varchar
-        if (DbUtil::castDataType($column->dbType) === 'varchar') {
+        if (DbSupport::castDataType($column->dbType) === 'varchar') {
             $this->_ruleString[] = [
                 'name' => $column->name,
                 'size' => $column->size,
@@ -347,7 +347,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
         }
 
         // text
-        if (DbUtil::castDataType($column->dbType) === 'text') {
+        if (DbSupport::castDataType($column->dbType) === 'text') {
             $this->_ruleString[] = [
                 'name' => $column->name,
                 'size' => 65535,
@@ -355,7 +355,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
         }
 
         // enum
-        if (DbUtil::castDataType($column->dbType) === 'enum') {
+        if (DbSupport::castDataType($column->dbType) === 'enum') {
             $this->_ruleRange[] = [
                 'name' => $column->name,
                 'range' => $column->enumValues,
@@ -363,7 +363,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
         }
 
         // set
-        if (DbUtil::castDataType($column->dbType) === 'set') {
+        if (DbSupport::castDataType($column->dbType) === 'set') {
             $isMatch = preg_match('/^([\w ]+)(?:\(([^)]+)\))?$/', $column->dbType, $matches);
             if ($isMatch !== false && !empty($matches[2])) {
                 $values = preg_split('/\s*,\s*/', $matches[2]);
@@ -379,16 +379,16 @@ abstract class ModelCreateCommand extends \yii\console\Controller
         }
 
         // year、date、time、timestamp、datetime
-        if (isset(self::$_dateFormat[DbUtil::castDataType($column->dbType)])) {
+        if (isset(self::$_dateFormat[DbSupport::castDataType($column->dbType)])) {
             $this->_ruleYmdHis[] = [
                 'name' => $column->name,
-                'format' => self::$_dateFormat[DbUtil::castDataType($column->dbType)],
+                'format' => self::$_dateFormat[DbSupport::castDataType($column->dbType)],
             ];
         }
 
         // xxx_id
         if (preg_match('/^([a-z0-9]+)_id$/', $column->name, $matches)) {
-            $getTableComment = DbUtil::getTableComment($matches[1]);
+            $getTableComment = DbSupport::getTableComment($matches[1]);
             if ($getTableComment !== null) {
                 $this->_ruleExist[] = [
                     'name' => $column->name,
@@ -403,11 +403,11 @@ abstract class ModelCreateCommand extends \yii\console\Controller
     {
         $rules = [];
 
-        $this->_namespace->addUse(RuleUtil::class);
+        $this->_namespace->addUse(RuleSupport::class);
         // Rule String
         if (!empty($this->_ruleString) || !empty($this->_ruleRange)) {
             $closure = new Closure();
-            $closure->setBody('return RuleUtil::strOrNull($value);')
+            $closure->setBody('return RuleSupport::strOrNull($value);')
                 ->setReturnType('?string')
                 ->addParameter('value');
             $rules[] = [
@@ -427,7 +427,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
             }
             foreach ($groupByFormat as $format => $names) {
                 $closure = new Closure();
-                $closure->setBody("return RuleUtil::dateOrNull(\$value, '{$format}');")
+                $closure->setBody("return RuleSupport::dateOrNull(\$value, '{$format}');")
                     ->setReturnType('?string')
                     ->addParameter('value');
                 $rules[] = [
