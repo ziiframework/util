@@ -11,6 +11,7 @@ use yii\filters\AccessRule;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\helpers\ArrayHelper;
+use Zii\Util\Supports\WebSupport;
 
 trait ControllerTrait
 {
@@ -66,7 +67,7 @@ trait ControllerTrait
 
     private function resolveAuthorizationMethods(): array
     {
-        $HttpAuthorization = WebUtil::extractAuthorizationToken_fromBearer();
+        $HttpAuthorization = WebSupport::extractAuthorizationToken_fromBearer();
         if ($HttpAuthorization !== null) {
             if (method_exists($this, 'beforeAuthorizationMethodResolved')) {
                 return $this->beforeAuthorizationMethodResolved(HttpBearerAuth::class, $HttpAuthorization);
@@ -75,7 +76,7 @@ trait ControllerTrait
             return [['class' => HttpBearerAuth::class]];
         }
 
-        $QueryAccessToken = WebUtil::extractAuthorizationToken_fromQuery();
+        $QueryAccessToken = WebSupport::extractAuthorizationToken_fromQuery();
         if ($QueryAccessToken !== null) {
             if (method_exists($this, 'beforeAuthorizationMethodResolved')) {
                 return $this->beforeAuthorizationMethodResolved(QueryParamAuth::class, $QueryAccessToken);
