@@ -253,12 +253,12 @@ abstract class ModelCreateCommand extends \yii\console\Controller
             $this->_class->addMethod('getAuthKey')
                 ->setReturnType('string')
                 ->addComment('@inheritdoc')
-                ->setBody('return $this->session_key;');
+                ->setBody('return $this->session_token;');
             $this->_class->addMethod('validateAuthKey')
                 ->setReturnType('bool')
                 ->addComment('@inheritdoc')
-                ->setBody('return $this->getAuthKey() === $session_key;')
-                ->addParameter('session_key');
+                ->setBody('return $this->getAuthKey() === $session_token;')
+                ->addParameter('session_token');
         }
 
         $file = Yii::getAlias('@app/models/' . Inflector::camelize($tableName) . '.php');
