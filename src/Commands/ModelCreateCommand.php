@@ -2,10 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zii\Util;
-
-use app\commands\BasicCommandController;
-use app\models\BasicActiveRecord;
+namespace Zii\Util\Commands;
 
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Closure;
@@ -17,8 +14,10 @@ use yii\db\ActiveQuery;
 use yii\db\ColumnSchema;
 use yii\db\TableSchema;
 use yii\helpers\Inflector;
+use Zii\Util\DbUtil;
+use Zii\Util\RuleUtil;
 
-abstract class ModelCreateCommand extends BasicCommandController
+abstract class ModelCreateCommand extends \yii\console\Controller
 {
     public static string $identityInterfaceImplement = 'yh';
 
@@ -155,7 +154,7 @@ abstract class ModelCreateCommand extends BasicCommandController
 
         $this->_namespace = new PhpNamespace('app\models');
         $this->_class = $this->_namespace->addClass(Inflector::camelize($tableName));
-        $this->_class->setExtends(BasicActiveRecord::class);
+        $this->_class->setExtends(\app\models\BasicActiveRecord::class);
         $this->_class->setFinal();
         if ($tableName === self::$identityInterfaceImplement) {
             // $this->_namespace->addUse('Yii');
