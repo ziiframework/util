@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @license [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
  */
 
-namespace Zii\Util;
+namespace Zii\Util\Behaviors;
 
 use yii\base\Behavior;
 use yii\base\InvalidArgumentException;
