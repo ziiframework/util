@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zii\Util;
+namespace Zii\Util\Parsers;
 
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Serializer;
