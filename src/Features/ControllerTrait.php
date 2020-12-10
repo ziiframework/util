@@ -16,7 +16,7 @@ trait ControllerTrait
 {
     public array $behaviorRules = [];
 
-    protected ?Model $validatorObject = null;
+    protected ?Model $validator = null;
 
     private function resolveBehaviorRules(string $module, string $controller, string $action): array
     {

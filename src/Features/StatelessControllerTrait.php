@@ -27,16 +27,16 @@ trait StatelessControllerTrait
                 throw new UnknownClassException("Class $validatorClass does not exist");
             }
 
-            $validatorObject = Yii::createObject($validatorClass);
+            $validator = Yii::createObject($validatorClass);
 
-            /** @var Model $validatorObject */
-            $this->validatorObject = $validatorObject;
-            $this->validatorObject->setScenario(Inflector::id2camel($php_url_part[3]));
+            /** @var Model $validator */
+            $this->validator = $validator;
+            $this->validator->setScenario(Inflector::id2camel($php_url_part[3]));
             if (Yii::$app->getRequest()->getIsPost()) {
-                $this->validatorObject->setAttributes(Yii::$app->getRequest()->get());
-                $this->validatorObject->setAttributes(Yii::$app->getRequest()->post());
+                $this->validator->setAttributes(Yii::$app->getRequest()->get());
+                $this->validator->setAttributes(Yii::$app->getRequest()->post());
             } else {
-                $this->validatorObject->setAttributes(Yii::$app->getRequest()->get());
+                $this->validator->setAttributes(Yii::$app->getRequest()->get());
             }
         }
     }
@@ -105,8 +105,8 @@ trait StatelessControllerTrait
         }
 
         $this->prepareValidatorObject();
-        if (($this->validatorObject instanceof Model) && (!$this->validatorObject->validate())) {
-            Yii::$app->response->data = ['err' => $this->validatorObject->getErrors()];
+        if (($this->validator instanceof Model) && (!$this->validator->validate())) {
+            Yii::$app->response->data = ['err' => $this->validator->getErrors()];
             return false;
         }
 
