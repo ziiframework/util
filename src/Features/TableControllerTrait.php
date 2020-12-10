@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zii\Util;
+namespace Zii\Util\Features;
 
 use Yii;
 use yii\data\ActiveDataProvider;

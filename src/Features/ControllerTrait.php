@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zii\Util;
+namespace Zii\Util\Features;
 
 use yii\base\InvalidConfigException;
 use yii\base\Model;
