@@ -14,6 +14,19 @@ trait TableControllerTrait
 {
     use StatelessControllerTrait;
 
+    protected function verbs(): array
+    {
+        $verbs = parent::verbs();
+
+        foreach ($verbs as $action => $methods) {
+            if (is_array($methods) && !in_array('OPTIONS', $methods, true)) {
+                $verbs[$action][] = 'OPTIONS';
+            }
+        }
+
+        return $verbs;
+    }
+
     public function actions(): array
     {
         $actions = parent::actions();
