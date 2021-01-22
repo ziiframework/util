@@ -449,7 +449,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                     'string',
                     'min' => 1,
                     'max' => (int)$size,
-                    'message' => '{attribute}必须是合法的字符',
+                    'message' => '{attribute}必须是有效的字符',
                     'tooShort' => '{attribute}不能少于1个字符',
                     'tooLong' => "{attribute}不能超过{$size}个字符",
                 ];
