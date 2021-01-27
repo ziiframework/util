@@ -25,7 +25,7 @@ class WebSupport
 
     public static function extractAuthorizationToken_fromBearer(): ?string
     {
-        $HttpAuthorization = Yii::$app->getRequest()->getHeaders()->get('Authorization', '');
+        $HttpAuthorization = Yii::$app->request->getHeaders()->get('Authorization', '');
         if (preg_match('/^Bearer\s+(.*?)$/', $HttpAuthorization, $matches) && !empty($matches[1])) {
             if (!empty(trim($matches[1]))) {
                 return trim($matches[1]);
@@ -37,7 +37,7 @@ class WebSupport
 
     public static function extractAuthorizationToken_fromQuery(): ?string
     {
-        $QueryAccessToken = Yii::$app->getRequest()->get('AccessToken', '');
+        $QueryAccessToken = Yii::$app->request->get('AccessToken', '');
         if (is_string($QueryAccessToken) && !empty(trim($QueryAccessToken))) {
             return trim($QueryAccessToken);
         }
