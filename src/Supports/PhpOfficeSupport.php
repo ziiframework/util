@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Zii\Util\Supports;
 
 use Yii;
-use PhpOffice\PhpSpreadsheet\{Spreadsheet, Style\Alignment, Writer\Exception as WriterException, Writer\Xlsx};
+use PhpOffice\PhpSpreadsheet\{Cell\DataType, Spreadsheet, Style\Alignment, Writer\Exception as WriterException, Writer\Xlsx};
 use yii\web\Response;
 
 class PhpOfficeSupport
@@ -25,12 +25,11 @@ class PhpOfficeSupport
                     $colCount = count($col);
                     $subcolIndex = 0;
                     foreach ($col as $subcol) {
-                        // TODO 这里应该做一些判断：只有 $subcol 是字符串的时候，才使用 Explicit
                         $sheet->setCellValueExplicitByColumnAndRow(
                             $colIndex,
                             $rowIndex + $subcolIndex,
                             $subcol,
-                            'str'
+                            self::dataTypeExplicit($subcol)
                         );
                         $subcolIndex++;
                     }
@@ -38,7 +37,12 @@ class PhpOfficeSupport
                         $maxRowsCount = $colCount;
                     }
                 } else {
-                    $sheet->setCellValueExplicitByColumnAndRow($colIndex, $rowIndex, $col, 'str');
+                    $sheet->setCellValueExplicitByColumnAndRow(
+                        $colIndex,
+                        $rowIndex,
+                        $col,
+                        self::dataTypeExplicit($col)
+                    );
                     $mergeCells[] = ['r' => $rowIndex, 'c' => $colIndex];
                 }
                 $colIndex++;
@@ -100,6 +104,19 @@ class PhpOfficeSupport
             $fileName = '导出数据.' . date('Y年m月d日H时i分s秒') . '.xlsx';
         }
 
+        $response->setDownloadHeaders(date('YmdHis') . mt_rand() . '.xlsx');
+
         return $response->sendFile($filePath, $fileName);
+    }
+
+    private static function dataTypeExplicit($value): string
+    {
+        $type = DataType::TYPE_STRING2;
+
+        if (is_int($value) || is_float($value)) {
+            $type = DataType::TYPE_NUMERIC;
+        }
+
+        return $type;
     }
 }
