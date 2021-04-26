@@ -19,7 +19,10 @@ use Zii\Util\Supports\RuleSupport;
 
 abstract class ModelCreateCommand extends \yii\console\Controller
 {
-    public static string $identityInterfaceImplement = 'user';
+    public string $modelNamespace = 'Zpp\Models';
+    public string $modelExtends = \Zpp\Models\BaseModel::class;
+
+    public string $identityTable = 'user';
 
     private PhpNamespace $_namespace;
 
@@ -152,11 +155,11 @@ abstract class ModelCreateCommand extends \yii\console\Controller
 
         $this->resetAttributes();
 
-        $this->_namespace = new PhpNamespace('app\models');
+        $this->_namespace = new PhpNamespace($this->modelNamespace);
         $this->_class = $this->_namespace->addClass(Inflector::camelize($tableName));
-        $this->_class->setExtends(\app\models\BasicActiveRecord::class);
+        $this->_class->setExtends($this->modelExtends);
         $this->_class->setFinal();
-        if ($tableName === static::$identityInterfaceImplement) {
+        if ($tableName === $this->identityTable) {
             // $this->_namespace->addUse('Yii');
             $this->_namespace->addUse(yii\web\IdentityInterface::class);
             $this->_class->addImplement(yii\web\IdentityInterface::class);
@@ -228,7 +231,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
             ->setBody('return array_merge(parent::rules(), ?);', [$this->generateRules()]);
 
         // identity interface implement
-        if ($tableName === static::$identityInterfaceImplement) {
+        if ($tableName === $this->identityTable) {
             $this->_class->addMethod('findIdentity')
                 ->setReturnType('?IdentityInterface')
                 ->setStatic()
@@ -253,15 +256,15 @@ abstract class ModelCreateCommand extends \yii\console\Controller
             $this->_class->addMethod('getAuthKey')
                 ->setReturnType('string')
                 ->addComment('@inheritdoc')
-                ->setBody('return $this->session_token;');
+                ->setBody('return $this->identity_secret;');
             $this->_class->addMethod('validateAuthKey')
                 ->setReturnType('bool')
                 ->addComment('@inheritdoc')
-                ->setBody('return $this->getAuthKey() === $session_token;')
-                ->addParameter('session_token');
+                ->setBody('return $this->getAuthKey() === $identity_secret;')
+                ->addParameter('identity_secret');
         }
 
-        $file = Yii::getAlias('@app/models/' . Inflector::camelize($tableName) . '.php');
+        $file = ZDIR_ROOT . '/src/Models/' . Inflector::camelize($tableName) . '.php';
         if ($overwrite === true || !file_exists($file)) {
             $objectBody = str_replace(
                 array_keys(self::$_codeReplacements),
