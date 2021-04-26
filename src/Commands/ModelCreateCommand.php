@@ -19,7 +19,7 @@ use Zii\Util\Supports\RuleSupport;
 
 abstract class ModelCreateCommand extends \yii\console\Controller
 {
-    public static string $identityInterfaceImplement = 'yh';
+    public static string $identityInterfaceImplement = 'user';
 
     private PhpNamespace $_namespace;
 
@@ -156,7 +156,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
         $this->_class = $this->_namespace->addClass(Inflector::camelize($tableName));
         $this->_class->setExtends(\app\models\BasicActiveRecord::class);
         $this->_class->setFinal();
-        if ($tableName === self::$identityInterfaceImplement) {
+        if ($tableName === static::$identityInterfaceImplement) {
             // $this->_namespace->addUse('Yii');
             $this->_namespace->addUse(yii\web\IdentityInterface::class);
             $this->_class->addImplement(yii\web\IdentityInterface::class);
@@ -228,7 +228,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
             ->setBody('return array_merge(parent::rules(), ?);', [$this->generateRules()]);
 
         // identity interface implement
-        if ($tableName === self::$identityInterfaceImplement) {
+        if ($tableName === static::$identityInterfaceImplement) {
             $this->_class->addMethod('findIdentity')
                 ->setReturnType('?IdentityInterface')
                 ->setStatic()
