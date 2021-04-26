@@ -2,7 +2,10 @@
     "name": "ziiframework/util",
     "description": "zii-framework util",
     "type": "library",
-    "keywords": ["zii-framework", "util"],
+    "keywords": [
+        "zii-framework",
+        "util"
+    ],
     "homepage": "https://github.com/ziiframework/util",
     "license": "BSD-3-Clause",
     "support": {
@@ -39,14 +42,10 @@
             "@composer install -vvv"
         ]
     },
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://asset-packagist.cn"
-        }
-    ],
     "autoload": {
-        "psr-4": { "Zii\\Util\\": "src" }
+        "psr-4": {
+            "Zii\\Util\\": "src"
+        }
     },
     "extra": {
         "branch-alias": {
