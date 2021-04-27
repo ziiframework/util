@@ -22,7 +22,7 @@ trait StatelessControllerTrait
         $php_url_part = explode('/', $php_url_path);
 
         if (isset($php_url_part[3]) && !isset($this->actions()[$php_url_part[3]])) {
-            $validatorClass = "\\Zpp\\Modules\\{$this->module->id}\\Models\\" . Inflector::id2camel($this->id) . 'Validator';
+            $validatorClass = "\\Zpp\\Modules\\" . ucfirst($this->module->id) . "\\Models\\" . Inflector::id2camel($this->id) . 'Validator';
             if (!class_exists($validatorClass)) {
                 throw new UnknownClassException("Class $validatorClass does not exist");
             }
