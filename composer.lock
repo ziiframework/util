@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "310be98724c1a7c60890991abe126e32",
+    "content-hash": "2b18263e767bb843451f1325d4e24f70",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -1238,16 +1238,16 @@
         },
         {
             "name": "ziiframework/zii",
-            "version": "3.2.8",
+            "version": "3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ziiframework/zii.git",
-                "reference": "0e2e47d0110594606209d7bb6b95af003fb3fccb"
+                "reference": "16610ab199fbaec970546a7c6b53dbba6dce4479"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ziiframework/zii/zipball/0e2e47d0110594606209d7bb6b95af003fb3fccb",
-                "reference": "0e2e47d0110594606209d7bb6b95af003fb3fccb",
+                "url": "https://api.github.com/repos/ziiframework/zii/zipball/16610ab199fbaec970546a7c6b53dbba6dce4479",
+                "reference": "16610ab199fbaec970546a7c6b53dbba6dce4479",
                 "shasum": ""
             },
             "require": {
@@ -1262,7 +1262,6 @@
             },
             "require-dev": {
                 "cebe/indent": "^1.0",
-                "cweagans/composer-patches": "^1.6",
                 "phpunit/phpunit": "^8.5"
             },
             "bin": [
@@ -1304,7 +1303,7 @@
                 "issues": "https://github.com/ziiframework/zii/issues?state=open",
                 "source": "https://github.com/ziiframework/zii"
             },
-            "time": "2021-04-26T05:48:52+00:00"
+            "time": "2021-05-07T08:45:45+00:00"
         }
     ],
     "packages-dev": [
