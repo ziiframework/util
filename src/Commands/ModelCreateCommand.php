@@ -284,8 +284,9 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                 array_values(self::$_codeReplacements),
                 $this->_namespace
             );
-            $objectBody = preg_replace('/["](\s+)(\d+)(\s+)["]/u', "'$0$1$2'", $objectBody);
-            $objectBody = preg_replace('/["](\s+)(\d+)["]/u', "'$0$1'", $objectBody);
+            $objectBody = preg_replace('/["]([^$]+)["]/u', "'$1'", $objectBody);
+            $objectBody = preg_replace('/["](\s+)(\d+)(\s+)["]/u', "'$1$2$3'", $objectBody);
+            $objectBody = preg_replace('/["](\s+)(\d+)["]/u', "'$1$2'", $objectBody);
             if (file_put_contents($file, "<?php\n\ndeclare(strict_types=1);\n\n" . $objectBody) !== false) {
                 $fileContent = file_get_contents($file);
                 $fileContent = str_replace(': \\?', ': ?', $fileContent);
@@ -469,7 +470,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                     'max' => (int)$size,
                     'message' => '%"{attribute}" . zii_t("必须是有效的字符")%',
                     'tooShort' => '%"{attribute}" . zii_t("不能少于") . " 1 " . zii_t("个字符")%',
-                    'tooLong' => '%"{attribute}" . zii_t("不能超过") . ' . " \"$size\" " . '. zii_t("个字符")%',
+                    'tooLong' => '%"{attribute}" . zii_t("不能超过") . ' . "\" $size\" " . '. zii_t("个字符")%',
                 ];
             }
         }
@@ -488,7 +489,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                     'max' => (int)$size,
                     'message' => '%"{attribute}" . zii_t("必须是整数")%',
                     'tooSmall' => '%"{attribute}" . zii_t("不能小于") . " 0"%',
-                    'tooBig' => '%"{attribute}" . zii_t("不能大于") . %' . " \"$size\"",
+                    'tooBig' => '%"{attribute}" . zii_t("不能大于") . ' . "\" $size\"%",
                 ];
             }
         }
