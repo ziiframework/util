@@ -207,10 +207,10 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                 array_diff_key(
                     array_combine(
                         array_column($_schema->columns, 'name'),
-                        array_column($_schema->columns, 'comment')
+                        array_map(fn (string $value): string => "%zii_t('$value')%", array_column($_schema->columns, 'comment'))
                     ), [
                     'id' => 'ID',
-                    'created_at' => '创建时间',
+                    'created_at' => zii_t('创建时间'),
                 ])
             ]);
 
