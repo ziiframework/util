@@ -470,7 +470,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                     'max' => (int)$size,
                     'message' => '%"{attribute}" . zii_t("必须是有效的字符")%',
                     'tooShort' => '%"{attribute}" . zii_t("不能少于") . " 1 " . zii_t("个字符")%',
-                    'tooLong' => '%"{attribute}" . zii_t("不能超过") . ' . "\" $size\" " . '. zii_t("个字符")%',
+                    'tooLong' => '%"{attribute}" . zii_t("不能超过") . ' . "\" $size \"" . '. zii_t("个字符")%',
                 ];
             }
         }
