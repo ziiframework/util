@@ -284,7 +284,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                 array_values(self::$_codeReplacements),
                 $this->_namespace
             );
-            $objectBody = preg_replace('/["]([^$]+)["]/u', "'$1'", $objectBody);
+            $objectBody = preg_replace('/["]([^$"]+)["]/u', "'$1'", $objectBody);
             $objectBody = preg_replace('/["](\s+)(\d+)(\s+)["]/u', "'$1$2$3'", $objectBody);
             $objectBody = preg_replace('/["](\s+)(\d+)["]/u', "'$1$2'", $objectBody);
             if (file_put_contents($file, "<?php\n\ndeclare(strict_types=1);\n\n" . $objectBody) !== false) {
