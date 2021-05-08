@@ -134,6 +134,19 @@ abstract class ModelCreateCommand extends \yii\console\Controller
         "\t" => '    ',
         '0 => ' => '',
         '1 => ' => '',
+
+        '"{attribute}"' => "'{attribute}'",
+        '"必须是有效的字符"' => "'必须是有效的字符'",
+        '"不能少于"' => "'不能少于'",
+        '"个字符"' => "'个字符'",
+        '"不能超过"' => "'不能超过'",
+        '"必须是整数"' => "'必须是整数'",
+        '"不能小于"' => "'不能小于'",
+        '"不能大于"' => "'不能大于'",
+        '"不是有效的值"' => "'不是有效的值'",
+        '"不能为空"' => "'不能为空'",
+        '"不存在"' => "'不存在'",
+        '"不能重复"' => "'不能重复'",
     ];
 
     private function resetAttributes(): void
@@ -271,6 +284,8 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                 array_values(self::$_codeReplacements),
                 $this->_namespace
             );
+            $objectBody = preg_replace('/["](\s+)(\d+)(\s+)["]/u', "'$0$1$2'", $objectBody);
+            $objectBody = preg_replace('/["](\s+)(\d+)["]/u', "'$0$1'", $objectBody);
             if (file_put_contents($file, "<?php\n\ndeclare(strict_types=1);\n\n" . $objectBody) !== false) {
                 $fileContent = file_get_contents($file);
                 $fileContent = str_replace(': \\?', ': ?', $fileContent);
@@ -452,9 +467,9 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                     'string',
                     'min' => 1,
                     'max' => (int)$size,
-                    'message' => "%'{attribute}' . zii_t('必须是有效的字符')%",
-                    'tooShort' => '{attribute}不能少于1个字符',
-                    'tooLong' => "{attribute}不能超过{$size}个字符",
+                    'message' => '%"{attribute}" . zii_t("必须是有效的字符")%',
+                    'tooShort' => '%"{attribute}" . zii_t("不能少于") . " 1 " . zii_t("个字符")%',
+                    'tooLong' => '%"{attribute}" . zii_t("不能超过") . ' . " \"$size\" " . '. zii_t("个字符")%',
                 ];
             }
         }
@@ -471,9 +486,9 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                     'integerOnly' => true,
                     'min' => 0,
                     'max' => (int)$size,
-                    'message' => '{attribute}必须是整数',
-                    'tooSmall' => '{attribute}不能小于0',
-                    'tooBig' => "{attribute}不能大于{$size}",
+                    'message' => '%"{attribute}" . zii_t("必须是整数")%',
+                    'tooSmall' => '%"{attribute}" . zii_t("不能小于") . " 0"%',
+                    'tooBig' => '%"{attribute}" . zii_t("不能大于") . %' . " \"$size\"",
                 ];
             }
         }
@@ -484,7 +499,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                 'boolean',
                 'trueValue' => '1',
                 'falseValue' => '0',
-                'message' => '{attribute}不是有效的值',
+                'message' => '%"{attribute}" . zii_t("不是有效的值")%',
             ];
         }
         // Range Type
@@ -496,7 +511,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                     'range' => $item['range'],
                     'strict' => true,
                     'allowArray' => $item['allowArray'] ?? false,
-                    'message' => '{attribute}不是有效的值',
+                    'message' => '%"{attribute}" . zii_t("不是有效的值")%',
                 ];
             }
         }
@@ -506,7 +521,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                 $this->arrayOrString(array_column($this->_ruleRequired, 'name')),
                 'required',
                 'strict' => true,
-                'message' => '{attribute}不能为空',
+                'message' => '%"{attribute}" . zii_t("不能为空")%',
             ];
         }
         // Exist Type
@@ -518,19 +533,19 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                     'exist',
                     'targetClass' => '%' . $item['targetClassName'] . '::class%',
                     'targetAttribute' => 'id',
-                    'message' => '{attribute}不存在',
+                    'message' => '%"{attribute}" . zii_t("不存在")%',
                 ];
                 // Class Comment
                 $this->_class->addComment(implode(' ', [
                     '@property',
                     $item['targetClassName'],
                     '$db' . ucfirst($item['targetClassName']),
-                    '关联' . str_replace('表', '', $item['targetClassComment']) . '[ActiveRecord].',
+                    // '关联' . str_replace('表', '', $item['targetClassComment']) . '[ActiveRecord].',
                 ]));
                 // Table Relations
                 $this->_class->addMethod("getDb{$item['targetClassName']}")
                     ->setReturnType('?ActiveQuery')
-                    ->addComment("关联{$item['targetClassComment']}")
+                    // ->addComment("关联{$item['targetClassComment']}")
                     ->addComment("@return null|ActiveQuery|{$item['targetClassName']}")
                     ->setBody("return \$this->hasOne({$item['targetClassName']}::class, ['id' => '" . lcfirst($item['targetClassName']) . "_id']);");
             }
@@ -547,7 +562,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                 $rules[] = [
                     $this->arrayOrString($uniqueFields),
                     'unique',
-                    'message' => '{attribute}不能重复',
+                    'message' => '%"{attribute}" . zii_t("不能重复")%',
                 ];
             }
         }
