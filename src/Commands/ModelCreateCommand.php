@@ -210,7 +210,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                         array_map(fn (string $value): string => "%zii_t(\"$value\")%", array_column($_schema->columns, 'comment'))
                     ), [
                     'id' => 'ID',
-                    'created_at' => "%zii_t('创建时间')%",
+                    'created_at' => "%zii_t(\"创建时间\")%",
                 ])
             ]);
 
@@ -452,7 +452,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                     'string',
                     'min' => 1,
                     'max' => (int)$size,
-                    'message' => '{attribute}必须是有效的字符',
+                    'message' => "%'{attribute}' . zii_t('必须是有效的字符')%",
                     'tooShort' => '{attribute}不能少于1个字符',
                     'tooLong' => "{attribute}不能超过{$size}个字符",
                 ];
