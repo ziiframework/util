@@ -215,7 +215,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
         // public function attributeLabels
         $this->_class->addMethod('attributeLabels')
             ->setReturnType('array')
-            ->addComment('@inheritdoc')
+            // ->addComment('@inheritdoc')
             ->setBody('return array_merge(parent::attributeLabels(), ?);', [
                 array_diff_key(
                     array_combine(
@@ -230,7 +230,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
         // public function extraFields
         $this->_class->addMethod('extraFields')
             ->setReturnType('array')
-            ->addComment('@inheritdoc')
+            // ->addComment('@inheritdoc')
             ->setBody('return array_merge(parent::extraFields(), ?);', [
                 array_map(function (string $f): string {
                     return 'db' . ucfirst($f);
@@ -240,7 +240,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
         // rules
         $this->_class->addMethod('rules')
             ->setReturnType('array')
-            ->addComment('@inheritdoc')
+            // ->addComment('@inheritdoc')
             ->setBody('return array_merge(parent::rules(), ?);', [$this->generateRules()]);
 
         // identity interface implement
@@ -248,7 +248,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
             $this->_class->addMethod('findIdentity')
                 ->setReturnType('?IdentityInterface')
                 ->setStatic()
-                ->addComment('@inheritdoc')
+                // ->addComment('@inheritdoc')
                 ->setBody("return static::findOne(['id' => \$id]);")
                 ->setParameters([
                     (new Parameter('id'))->setType('int'),
@@ -256,7 +256,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
             $this->_class->addMethod('findIdentityByAccessToken')
                 ->setReturnType('?IdentityInterface')
                 ->setStatic()
-                ->addComment('@inheritdoc')
+                // ->addComment('@inheritdoc')
                 ->setBody("return static::findOne(['access_token' => \$token]);")
                 ->setParameters([
                     (new Parameter('token'))->setType('string'),
@@ -264,15 +264,15 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                 ]);
             $this->_class->addMethod('getId')
                 ->setReturnType('int')
-                ->addComment('@inheritdoc')
+                // ->addComment('@inheritdoc')
                 ->setBody('return $this->getPrimaryKey();');
             $this->_class->addMethod('getAuthKey')
                 ->setReturnType('string')
-                ->addComment('@inheritdoc')
+                // ->addComment('@inheritdoc')
                 ->setBody('return $this->identity_secret;');
             $this->_class->addMethod('validateAuthKey')
                 ->setReturnType('bool')
-                ->addComment('@inheritdoc')
+                // ->addComment('@inheritdoc')
                 ->setBody('return $this->getAuthKey() === $identity_secret;')
                 ->addParameter('identity_secret');
         }
