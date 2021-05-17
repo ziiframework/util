@@ -128,6 +128,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
         '"%' => '',
         '%"' => '',
         '""' => "''",
+        '" "' => "' '",
         '\\$' => '$',
         '\\n\\t' => "\n",
         '\\n' => "\n",
@@ -468,9 +469,9 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                     'string',
                     'min' => 1,
                     'max' => (int)$size,
-                    'message' => '%"{attribute}" . zii_t("不是有效的字符")%',
-                    'tooShort' => '%"{attribute}" . zii_t("不能少于") . " 1 " . zii_t("个字符")%',
-                    'tooLong' => '%"{attribute}" . zii_t("不能超过") . ' . "\" $size \"" . '. zii_t("个字符")%',
+                    'message' => '%"{attribute}" . " " . zii_t("不是有效的字符")%',
+                    'tooShort' => '%"{attribute}" . " " . zii_t("不能少于") . " 1 " . zii_t("个字符")%',
+                    'tooLong' => '%"{attribute}" . " " . zii_t("不能超过") . ' . "\" $size \"" . '. zii_t("个字符")%',
                 ];
             }
         }
@@ -487,9 +488,9 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                     'integerOnly' => true,
                     'min' => 0,
                     'max' => (int)$size,
-                    'message' => '%"{attribute}" . zii_t("必须是整数")%',
-                    'tooSmall' => '%"{attribute}" . zii_t("不能小于") . " 0"%',
-                    'tooBig' => '%"{attribute}" . zii_t("不能大于") . ' . "\" $size\"%",
+                    'message' => '%"{attribute}" . " " . zii_t("必须是整数")%',
+                    'tooSmall' => '%"{attribute}" . " " . zii_t("不能小于") . " 0"%',
+                    'tooBig' => '%"{attribute}" . " " . zii_t("不能大于") . ' . "\" $size\"%",
                 ];
             }
         }
@@ -500,7 +501,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                 'boolean',
                 'trueValue' => '1',
                 'falseValue' => '0',
-                'message' => '%"{attribute}" . zii_t("不是有效的值")%',
+                'message' => '%"{attribute}" . " " . zii_t("不是有效的值")%',
             ];
         }
         // Range Type
@@ -512,7 +513,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                     'range' => $item['range'],
                     'strict' => true,
                     'allowArray' => $item['allowArray'] ?? false,
-                    'message' => '%"{attribute}" . zii_t("不是有效的值")%',
+                    'message' => '%"{attribute}" . " " . zii_t("不是有效的值")%',
                 ];
             }
         }
@@ -522,7 +523,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                 $this->arrayOrString(array_column($this->_ruleRequired, 'name')),
                 'required',
                 'strict' => true,
-                'message' => '%"{attribute}" . zii_t("不能为空")%',
+                'message' => '%"{attribute}" . " " . zii_t("不能为空")%',
             ];
         }
         // Exist Type
@@ -534,7 +535,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                     'exist',
                     'targetClass' => '%' . $item['targetClassName'] . '::class%',
                     'targetAttribute' => 'id',
-                    'message' => '%"{attribute}" . zii_t("不存在")%',
+                    'message' => '%"{attribute}" . " " . zii_t("不存在")%',
                 ];
                 // Class Comment
                 $this->_class->addComment(implode(' ', [
@@ -563,7 +564,7 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                 $rules[] = [
                     $this->arrayOrString($uniqueFields),
                     'unique',
-                    'message' => '%"{attribute}" . zii_t("不能重复")%',
+                    'message' => '%"{attribute}" . " " . zii_t("不能重复")%',
                 ];
             }
         }
