@@ -22,15 +22,15 @@
     "prefer-stable": true,
     "require": {
         "php": ">=7.4.0",
-        "ext-mbstring": "*",
         "ext-json": "*",
+        "ext-mbstring": "*",
         "charescape/php-functions": "1.0.x-dev",
-        "ziiframework/zii": ">=3.2.0",
         "imangazaliev/didom": "~1.16.0",
-        "sabberworm/php-css-parser": "~8.3.0",
         "phpoffice/phpspreadsheet": "~1.16.0",
+        "sabberworm/php-css-parser": "~8.3.0",
+        "stichoza/google-translate-php": "^4.1",
         "symfony/serializer": "~5.1.0",
-        "stichoza/google-translate-php": "^4.1"
+        "ziiframework/zii": ">=3.2.0"
     },
     "require-dev": {
         "nette/php-generator": "~3.5.0",
