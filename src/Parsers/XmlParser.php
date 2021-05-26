@@ -16,9 +16,9 @@ final class XmlParser extends BaseObject implements RequestParserInterface
      */
     public function parse($rawBody, $contentType): array
     {
-        $xml_encoder = new XmlEncoder([XmlEncoder::ROOT_NODE_NAME => 'xml', XmlEncoder::ENCODING => 'UTF-8']);
+        $encoder = new XmlEncoder([XmlEncoder::ROOT_NODE_NAME => 'xml', XmlEncoder::ENCODING => 'UTF-8']);
 
-        $serializer = (new Serializer([], [$xml_encoder]));
+        $serializer = (new Serializer([], [$encoder]));
 
         return $serializer->decode($rawBody,'xml');
     }
