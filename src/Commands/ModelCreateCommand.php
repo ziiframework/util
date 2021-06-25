@@ -506,8 +506,8 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                     'string',
                     'min' => $min_size,
                     'max' => $max_size,
-                    'message' => '%"{attribute}" . " " . zii_t("不是有效的字符")%',
-                    'tooShort' => '%"{attribute}" . " " . zii_t("不能少于") . " 1 " . zii_t("个字符")%',
+                    'message'  => '%"{attribute}" . " " . zii_t("不是有效的字符")%',
+                    'tooShort' => '%"{attribute}" . " " . zii_t("不能少于") . ' . "\" $min_size \"" . '. zii_t("个字符")%',
                     'tooLong'  => '%"{attribute}" . " " . zii_t("不能超过") . ' . "\" $max_size \"" . '. zii_t("个字符")%',
                 ];
             }
