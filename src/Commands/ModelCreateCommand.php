@@ -498,13 +498,13 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                 $groupBySize[$column['size']][] = $column['name'];
             }
             foreach ($groupBySize as $size => $names) {
-                $int_size = (int)$size;
+                $max_size = (int)$size;
 
                 $rules[] = [
                     $this->arrayOrString($names),
                     'string',
-                    'min' => $int_size === 65535 || $int_size >= 60000 ? 0 : 1,
-                    'max' => $int_size,
+                    'min' => $max_size === 65535 || $max_size >= 60000 ? 0 : 1,
+                    'max' => $max_size,
                     'message' => '%"{attribute}" . " " . zii_t("不是有效的字符")%',
                     'tooShort' => '%"{attribute}" . " " . zii_t("不能少于") . " 1 " . zii_t("个字符")%',
                     'tooLong' => '%"{attribute}" . " " . zii_t("不能超过") . ' . "\" $size \"" . '. zii_t("个字符")%',
