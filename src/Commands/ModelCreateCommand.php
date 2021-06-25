@@ -200,9 +200,17 @@ abstract class ModelCreateCommand extends \yii\console\Controller
             }
 
             // Field Comment
+            $varType = $column->phpType;
+            if (mb_stripos($column->dbType, 'decimal') !== false) {
+                $varType = 'float';
+            }
+            if (mb_stripos($column->dbType, 'tinyint') !== false && preg_match('/^(is|has|can|enable)_/', $column->name)) {
+                $varType = 'bool';
+            }
+
             $this->_class->addComment(implode(' ', [
                 '@property',
-                mb_stripos($column->dbType, 'decimal') !== false ? 'float' : $column->phpType,
+                $varType,
                 '$' . $column->name,
                 $column->comment . "[$column->dbType]" . ($column->allowNull ? '.' : '[NOT NULL].'),
                 isset($this->_indexes[$column->name]) && $this->_indexes[$column->name] ? "This property is {$this->_indexes[$column->name]}." : '',
