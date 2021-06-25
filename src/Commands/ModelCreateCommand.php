@@ -82,6 +82,16 @@ abstract class ModelCreateCommand extends \yii\console\Controller
     private array $_ruleString = [];
 
     /**
+     * String eg:
+     * [
+     *   ['name' => NAME],
+     *   ['name' => NAME],
+     *   ['name' => NAME],
+     * ]
+     */
+    private array $_ruleText = [];
+
+    /**
      * YmdHis eg:
      * [
      *   ['name' => NAME, 'format' => 'Y-m-d'],
@@ -376,6 +386,8 @@ abstract class ModelCreateCommand extends \yii\console\Controller
 
         // text
         if (DbSupport::castDataType($column->dbType) === 'text') {
+            $this->_ruleText[] = ['name' => $column->name];
+
             $this->_ruleString[] = [
                 'name' => $column->name,
                 'size' => 65535,
@@ -438,11 +450,25 @@ abstract class ModelCreateCommand extends \yii\console\Controller
             $closure->setBody('return RuleSupport::strOrNull($value);')
                 ->setReturnType('?string')
                 ->addParameter('value');
+
             $rules[] = [
                 $this->arrayOrString(array_unique(array_merge(
                     array_column($this->_ruleString, 'name'),
                     array_column($this->_ruleRange, 'name')
                 ))),
+                'filter',
+                'filter' => "%$closure%",
+            ];
+        }
+        // Rule Text
+        if (!empty($this->_ruleText)) {
+            $closure = new Closure();
+            $closure->setBody('return RuleSupport::strOrEmpty($value);')
+                ->setReturnType('string')
+                ->addParameter('value');
+
+            $rules[] = [
+                $this->arrayOrString(array_column($this->_ruleText, 'name')),
                 'filter',
                 'filter' => "%$closure%",
             ];
@@ -472,11 +498,13 @@ abstract class ModelCreateCommand extends \yii\console\Controller
                 $groupBySize[$column['size']][] = $column['name'];
             }
             foreach ($groupBySize as $size => $names) {
+                $int_size = (int)$size;
+
                 $rules[] = [
                     $this->arrayOrString($names),
                     'string',
-                    'min' => 1,
-                    'max' => (int)$size,
+                    'min' => $int_size === 65535 || $int_size >= 60000 ? 0 : 1,
+                    'max' => $int_size,
                     'message' => '%"{attribute}" . " " . zii_t("不是有效的字符")%',
                     'tooShort' => '%"{attribute}" . " " . zii_t("不能少于") . " 1 " . zii_t("个字符")%',
                     'tooLong' => '%"{attribute}" . " " . zii_t("不能超过") . ' . "\" $size \"" . '. zii_t("个字符")%',

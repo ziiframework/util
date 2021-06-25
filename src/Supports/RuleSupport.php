@@ -31,6 +31,17 @@ class RuleSupport
         return null;
     }
 
+    public static function strOrEmpty($value): string
+    {
+        $result = self::strOrNull($value);
+
+        if ($result === null) {
+            $result = '';
+        }
+
+        return $result;
+    }
+
     public static function strJsonFormat($value): ?string
     {
         if (is_array($value)) {
