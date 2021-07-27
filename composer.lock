@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "45ea6ced4003888980cd1841a825688b",
+    "content-hash": "de9482152b3cdb7457de4b2902b61d2c",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -413,16 +413,16 @@
         },
         {
             "name": "imangazaliev/didom",
-            "version": "1.16.3",
+            "version": "1.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Imangazaliev/DiDOM.git",
-                "reference": "7fc9cc1f519e5b2342c3ce00d98e53ed32b33011"
+                "reference": "8f5200d80c62c525ab852f3af0683187e9ce0bbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Imangazaliev/DiDOM/zipball/7fc9cc1f519e5b2342c3ce00d98e53ed32b33011",
-                "reference": "7fc9cc1f519e5b2342c3ce00d98e53ed32b33011",
+                "url": "https://api.github.com/repos/Imangazaliev/DiDOM/zipball/8f5200d80c62c525ab852f3af0683187e9ce0bbd",
+                "reference": "8f5200d80c62c525ab852f3af0683187e9ce0bbd",
                 "shasum": ""
             },
             "require": {
@@ -459,9 +459,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Imangazaliev/DiDOM/issues",
-                "source": "https://github.com/Imangazaliev/DiDOM/tree/1.16.3"
+                "source": "https://github.com/Imangazaliev/DiDOM/tree/1.17"
             },
-            "time": "2021-02-09T16:06:11+00:00"
+            "time": "2021-07-26T15:46:07+00:00"
         },
         {
             "name": "maennchen/zipstream-php",
