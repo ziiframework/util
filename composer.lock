@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "45ea6ced4003888980cd1841a825688b",
+    "content-hash": "2f75bb48d118b48365191e60a83451a8",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -1829,25 +1829,25 @@
         },
         {
             "name": "nette/php-generator",
-            "version": "v3.5.3",
+            "version": "v3.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/php-generator.git",
-                "reference": "119f01a7bd590469cb01b538f20a125a28853626"
+                "reference": "788099647e653490f2e5c801c59171d81fbb9d06"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/php-generator/zipball/119f01a7bd590469cb01b538f20a125a28853626",
-                "reference": "119f01a7bd590469cb01b538f20a125a28853626",
+                "url": "https://api.github.com/repos/nette/php-generator/zipball/788099647e653490f2e5c801c59171d81fbb9d06",
+                "reference": "788099647e653490f2e5c801c59171d81fbb9d06",
                 "shasum": ""
             },
             "require": {
                 "nette/utils": "^3.1.2",
-                "php": ">=7.1"
+                "php": ">=7.2 <8.2"
             },
             "require-dev": {
-                "nette/tester": "^2.0",
-                "nikic/php-parser": "^4.4",
+                "nette/tester": "^2.4",
+                "nikic/php-parser": "^4.11",
                 "phpstan/phpstan": "^0.12",
                 "tracy/tracy": "^2.3"
             },
@@ -1857,7 +1857,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.5-dev"
+                    "dev-master": "3.6-dev"
                 }
             },
             "autoload": {
@@ -1881,7 +1881,7 @@
                     "homepage": "https://nette.org/contributors"
                 }
             ],
-            "description": "🐘 Nette PHP Generator: generates neat PHP code for you. Supports new PHP 7.4 features.",
+            "description": "🐘 Nette PHP Generator: generates neat PHP code for you. Supports new PHP 8.1 features.",
             "homepage": "https://nette.org",
             "keywords": [
                 "code",
@@ -1891,26 +1891,26 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/php-generator/issues",
-                "source": "https://github.com/nette/php-generator/tree/v3.5.3"
+                "source": "https://github.com/nette/php-generator/tree/v3.6.1"
             },
-            "time": "2021-02-24T18:40:21+00:00"
+            "time": "2021-09-18T17:19:57+00:00"
         },
         {
             "name": "nette/utils",
-            "version": "v3.2.2",
+            "version": "v3.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/utils.git",
-                "reference": "967cfc4f9a1acd5f1058d76715a424c53343c20c"
+                "reference": "8b90ef7f5d02df449e632aff4d4a3ba5fc5b4312"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/utils/zipball/967cfc4f9a1acd5f1058d76715a424c53343c20c",
-                "reference": "967cfc4f9a1acd5f1058d76715a424c53343c20c",
+                "url": "https://api.github.com/repos/nette/utils/zipball/8b90ef7f5d02df449e632aff4d4a3ba5fc5b4312",
+                "reference": "8b90ef7f5d02df449e632aff4d4a3ba5fc5b4312",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.2 <8.1"
+                "php": ">=7.2 <8.2"
             },
             "conflict": {
                 "nette/di": "<3.0.6"
@@ -1976,9 +1976,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/utils/issues",
-                "source": "https://github.com/nette/utils/tree/v3.2.2"
+                "source": "https://github.com/nette/utils/tree/v3.2.4"
             },
-            "time": "2021-03-03T22:53:25+00:00"
+            "time": "2021-09-19T23:30:35+00:00"
         },
         {
             "name": "phar-io/manifest",
