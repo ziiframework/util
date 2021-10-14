@@ -29,7 +29,7 @@
         "phpoffice/phpspreadsheet": "~1.17.0",
         "sabberworm/php-css-parser": "~8.3.0",
         "stichoza/google-translate-php": "^4.1",
-        "symfony/serializer": "~5.2.0",
+        "symfony/serializer": "~5.3.8",
         "ziiframework/zii": ">=3.4.0"
     },
     "require-dev": {
