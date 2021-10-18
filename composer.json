@@ -25,7 +25,7 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "charescape/php-functions": "1.0.x-dev",
-        "imangazaliev/didom": "~1.16.0",
+        "imangazaliev/didom": "~1.18",
         "phpoffice/phpspreadsheet": "~1.17.0",
         "sabberworm/php-css-parser": "~8.3.0",
         "stichoza/google-translate-php": "^4.1",
