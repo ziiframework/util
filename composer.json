@@ -33,7 +33,7 @@
         "ziiframework/zii": ">=3.4.0"
     },
     "require-dev": {
-        "nette/php-generator": "~3.6.4",
+        "nette/php-generator": "~3.6.5",
         "phpunit/phpunit": "^8.5"
     },
     "scripts": {
