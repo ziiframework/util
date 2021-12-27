@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "832069983844fc2dc957f83e781694f1",
+    "content-hash": "7128f7d252d6a1fe115657ede8eb1fc4",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -126,23 +126,20 @@
         },
         {
             "name": "ezyang/htmlpurifier",
-            "version": "v4.13.0",
+            "version": "v4.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ezyang/htmlpurifier.git",
-                "reference": "08e27c97e4c6ed02f37c5b2b20488046c8d90d75"
+                "reference": "12ab42bd6e742c70c0a52f7b82477fcd44e64b75"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/08e27c97e4c6ed02f37c5b2b20488046c8d90d75",
-                "reference": "08e27c97e4c6ed02f37c5b2b20488046c8d90d75",
+                "url": "https://api.github.com/repos/ezyang/htmlpurifier/zipball/12ab42bd6e742c70c0a52f7b82477fcd44e64b75",
+                "reference": "12ab42bd6e742c70c0a52f7b82477fcd44e64b75",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2"
-            },
-            "require-dev": {
-                "simpletest/simpletest": "dev-master#72de02a7b80c6bb8864ef9bf66d41d2f58f826bd"
             },
             "type": "library",
             "autoload": {
@@ -174,9 +171,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ezyang/htmlpurifier/issues",
-                "source": "https://github.com/ezyang/htmlpurifier/tree/master"
+                "source": "https://github.com/ezyang/htmlpurifier/tree/v4.14.0"
             },
-            "time": "2020-06-29T00:56:53+00:00"
+            "time": "2021-12-25T01:21:49+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1675,16 +1672,16 @@
         },
         {
             "name": "ziiframework/composer",
-            "version": "3.3.0",
+            "version": "3.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ziiframework/composer.git",
-                "reference": "f0336a2e84783265ae946dad1a516012b9b86f60"
+                "reference": "a79ea4056831deccf89e4d182644911e224ecccd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ziiframework/composer/zipball/f0336a2e84783265ae946dad1a516012b9b86f60",
-                "reference": "f0336a2e84783265ae946dad1a516012b9b86f60",
+                "url": "https://api.github.com/repos/ziiframework/composer/zipball/a79ea4056831deccf89e4d182644911e224ecccd",
+                "reference": "a79ea4056831deccf89e4d182644911e224ecccd",
                 "shasum": ""
             },
             "require": {
@@ -1729,20 +1726,20 @@
                 "issues": "https://github.com/ziiframework/composer/issues",
                 "source": "https://github.com/ziiframework/composer"
             },
-            "time": "2021-11-21T14:17:02+00:00"
+            "time": "2021-12-24T06:10:20+00:00"
         },
         {
             "name": "ziiframework/zii",
-            "version": "3.5.1",
+            "version": "3.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ziiframework/zii.git",
-                "reference": "c6c814c13ab4ca0306a205fabd6bd02b9ee2dbb3"
+                "reference": "592416518291053b732fb6d00bbd29c1a626bb76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ziiframework/zii/zipball/c6c814c13ab4ca0306a205fabd6bd02b9ee2dbb3",
-                "reference": "c6c814c13ab4ca0306a205fabd6bd02b9ee2dbb3",
+                "url": "https://api.github.com/repos/ziiframework/zii/zipball/592416518291053b732fb6d00bbd29c1a626bb76",
+                "reference": "592416518291053b732fb6d00bbd29c1a626bb76",
                 "shasum": ""
             },
             "require": {
@@ -1800,7 +1797,7 @@
                 "issues": "https://github.com/ziiframework/zii/issues?state=open",
                 "source": "https://github.com/ziiframework/zii"
             },
-            "time": "2021-12-14T15:04:32+00:00"
+            "time": "2021-12-24T06:31:28+00:00"
         }
     ],
     "packages-dev": [
