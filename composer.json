@@ -29,26 +29,26 @@
         "phpoffice/phpspreadsheet": "~1.19.0",
         "sabberworm/php-css-parser": "~8.3.0",
         "stichoza/google-translate-php": "^4.1",
-        "symfony/serializer": "^5.4.0",
-        "ziiframework/zii": ">=3.4.0"
+        "symfony/serializer": "^5.0|^6.0",
+        "ziiframework/zii": ">=3.5.0"
     },
     "require-dev": {
-        "nette/php-generator": "~3.6.4",
+        "nette/php-generator": "^3.6",
         "phpunit/phpunit": "^8.5"
     },
     "scripts": {
         "redo-install": [
-            "rm -rf vendor/",
             "rm -f composer.lock",
             "@composer self-update -vvv",
             "@composer install -vvv"
         ]
     },
     "config": {
-        "platform": {
-            "php": "7.4"
-        },
-        "sort-packages": true
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "allow-plugins": {
+            "ziiframework/composer": true
+        }
     },
     "autoload": {
         "psr-4": {
