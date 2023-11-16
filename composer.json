@@ -34,7 +34,7 @@
     },
     "require-dev": {
         "nette/php-generator": "^3.6",
-        "phpunit/phpunit": "^8.5"
+        "phpunit/phpunit": "^9.6"
     },
     "scripts": {
         "redo-install": [
